@@ -1,0 +1,19 @@
+2025-07-23 03:23:54,717 - INFO - 127.0.0.1:57278 - GET / - Status: [92m200[0m - Time: 0.00s
+2025-07-23 03:23:54,836 - INFO - 127.0.0.1:57278 - GET /favicon.ico - Status: [93m404[0m - Time: 0.00s - Reason: Not Found
+2025-07-23 03:35:11,306 - INFO - 127.0.0.1:57775 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-23 03:35:11,681 - INFO - 127.0.0.1:57775 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.14s
+2025-07-23 03:35:25,896 - INFO - 127.0.0.1:57776 - POST /api/v1/auth/signup - Status: [93m403[0m - Time: 2.34s - Reason: {'message': 'A user with this email already exists.', 'error_code': 'user_exists', 'resolution': 'Please use a different email'}
+2025-07-23 03:38:37,605 - INFO - 127.0.0.1:57883 - POST /api/v1/auth/signin - Status: [92m200[0m - Time: 2.43s
+2025-07-23 04:05:20,094 - INFO - 127.0.0.1:59589 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-23 04:05:20,274 - INFO - 127.0.0.1:59589 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
+2025-07-23 04:05:32,665 - INFO - 127.0.0.1:59590 - POST /api/v1/auth/signup - Status: [92m200[0m - Time: 2.30s
+2025-07-23 04:05:58,761 - INFO - 127.0.0.1:59591 - POST /api/v1/auth/verify-email/ - Status: [92m200[0m - Time: 0.03s
+2025-07-23 04:06:16,339 - INFO - 127.0.0.1:59605 - POST /api/v1/auth/signin - Status: [92m200[0m - Time: 1.17s
+2025-07-23 04:09:24,635 - INFO - 127.0.0.1:59781 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-23 04:09:25,004 - INFO - 127.0.0.1:59781 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.01s
+2025-07-23 04:09:31,997 - INFO - 127.0.0.1:59782 - POST /api/v1/auth/signin - Status: [92m200[0m - Time: 0.86s
+2025-07-23 04:11:58,462 - INFO - 127.0.0.1:59928 - POST /api/v1/auth/signin - Status: [93m404[0m - Time: 0.05s - Reason: {'message': 'The user with this email does not exist', 'error_code': 'user_not_found', 'resolution': 'Please check the user credentials'}
+2025-07-23 06:45:12,040 - INFO - 127.0.0.1:65060 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-23 06:45:12,291 - INFO - 127.0.0.1:65060 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
+2025-07-23 07:03:43,136 - INFO - 127.0.0.1:49252 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.01s
+2025-07-23 07:03:43,467 - INFO - 127.0.0.1:49252 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
