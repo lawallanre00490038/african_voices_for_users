@@ -1,4 +1,4 @@
-# 🗣️ Yoruba Voices Dataset Platform
+# 🗣️ African Voices Dataset Platform
 
 **African Voices** is an open-source platform dedicated to the **distribution of African voice datasets**, with support for **Yoruba**, **Pidgin**, **Igbo**, and **Hausa** languages. Built to accelerate **African language AI development**, the platform enables users to **easily access and download curated, community-contributed audio datasets**.
 
