@@ -1,6 +1,8 @@
 # 🗣️ Yoruba Voices Dataset Platform
 
-**Yoruba Voices** is a robust, open-source platform for collecting, managing, and distributing audio datasets in the **Yoruba language**. Designed to accelerate **African language AI development**, it supports large-scale, crowd-sourced data collection, metadata validation, seamless AWS S3 integration, and authenticated dataset access.
+**African Voices** is an open-source platform dedicated to the **distribution of African voice datasets**, with support for **Yoruba**, **Pidgin**, **Igbo**, and **Hausa** languages. Built to accelerate **African language AI development**, the platform enables users to **easily access and download curated, community-contributed audio datasets**.
+
+It features structured metadata, secure AWS S3 integration, and authenticated download workflows—empowering **developers, researchers**, and **organizations** with high-quality, open voice data for **speech technologies** and **natural language processing**.
 
 ---
 
@@ -206,9 +208,9 @@ docker run -p 8000:8000 yoruba-dataset
 
 ## 📢 Contribution & Contact
 
-- Built by: **Lawal Olanrewaju**  
+- Built by: **Data Science Nigeria**  
 - Purpose: Open-sourcing African voices for inclusive AI  
-- Contact: [your-email@example.com]  
+- Contact: [dev.equalyz.ai]  
 
 ---
 
