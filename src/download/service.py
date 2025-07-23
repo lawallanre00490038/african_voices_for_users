@@ -4,7 +4,7 @@ from sqlmodel import select
 from src.db.models import AudioSample, DownloadLog
 from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
-from .utils import stream_zip, fetch_subset
+from .utils import fetch_subset
 from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES, VALID_PERCENTAGES
 import boto3
 

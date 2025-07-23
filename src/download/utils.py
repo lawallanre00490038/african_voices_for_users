@@ -1,5 +1,5 @@
 from src.db.models import AudioSample
-import boto3, io
+import  io
 import pandas as pd
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
