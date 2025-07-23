@@ -17,3 +17,5 @@
 2025-07-23 06:45:12,291 - INFO - 127.0.0.1:65060 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
 2025-07-23 07:03:43,136 - INFO - 127.0.0.1:49252 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.01s
 2025-07-23 07:03:43,467 - INFO - 127.0.0.1:49252 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
+2025-07-23 08:49:02,115 - INFO - 127.0.0.1:52022 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-23 08:49:02,369 - INFO - 127.0.0.1:52022 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.04s

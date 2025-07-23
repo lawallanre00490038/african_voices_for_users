@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan,
-    title="Afrocan Voices API",
+    title="African Voices API",
     description=description,
     version=version,
     license_info={"name": "MIT License", "url": "https://opensource.org/license/mit"},
