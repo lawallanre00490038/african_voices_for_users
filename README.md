@@ -18,7 +18,7 @@ Empowering **researchers, developers**, and **AI organizations** with curated, c
 
 ## 🚀 Key Features
 
-- ✅ Crowd-sourced audio uploads with structured metadata  
+- ✅ Crowd-sourced audio downloads with structured metadata  
 - 📁 Secure storage in **AWS S3**  
 - 📊 Admin dashboard with real-time statistics and feedback tracking  
 - 📦 Dataset slicing and ZIP packaging  
