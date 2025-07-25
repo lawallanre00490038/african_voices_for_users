@@ -45,8 +45,7 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"Error connecting to Redis: {e}")
 
-    await create_tables() # This will bypass alembic migrations
-
+    await create_tables()
     yield
 
 
