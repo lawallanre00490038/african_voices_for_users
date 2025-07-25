@@ -8,7 +8,7 @@ It features structured metadata, secure AWS S3 integration, and authenticated do
 
 ## 💡 Use Case
 
-Empowering **researchers, developers**, and **AI organizations** with curated, community-driven Yoruba voice data for:
+Empowering **researchers, developers**, and **AI organizations** with curated, community-driven African (Yoruba, Igbo, Pidgin, Hausa) voice data for:
 
 - 🗣️ **Speech Recognition**
 - 🌍 **Translation**
