@@ -11,13 +11,16 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str
     GOOGLE_REDIRECT_URI: str
     RESEND_API_KEY: str
-    GROQ_API_KEY: str
 
     FRONTEND_URL: str 
     BACKEND_URL: str
     EMAIL_FROM: str
 
     S3_BUCKET_NAME: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_REGION: str
+    AWS_ENDPOINT_URL: str
 
     PGDATABASE: str
     PGUSER: str

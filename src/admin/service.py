@@ -98,7 +98,7 @@ class AdminService:
           sample = AudioSample(
               id=sample_id,
               dataset_id=dataset_id,
-              file_path=s3_key,
+              audio_path=s3_key,
               transcription=row["transcript"],
               duration=float(row["duration"]),
               language=row["language"],

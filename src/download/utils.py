@@ -4,8 +4,8 @@ import pandas as pd
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from .s3_config import s3, BUCKET
-from datetime import datetime
+from .s3_config import s3
+import datetime
 
 async def fetch_subset(session: AsyncSession, language: str, pct: int):
     # Count total number of samples
@@ -33,7 +33,7 @@ def estimate_total_size(samples: list, bucket: str) -> int:
     """Estimate total size of ZIP content in bytes."""
     total = 0
     for s in samples:
-        head = s3.head_object(Bucket=bucket, Key=s.file_path)
+        head = s3.head_object(Bucket=bucket, Key=s.audio_path)
         total += head['ContentLength']
     return total
 
@@ -41,10 +41,18 @@ def estimate_total_size(samples: list, bucket: str) -> int:
 def generate_metadata_buffer(samples, as_excel=True):
     """Create metadata buffer in either Excel or CSV."""
     df = pd.DataFrame([{
+        "speaker_id": s.speaker_id,
         "transcript": s.transcript,
-        "samplerate": s.samplerate,
+        "transcript_id": s.transcript_id,
+        "audio_path": f"audio/{idx+1:04d}_clip.wav",
+        "sample_rate": s.sample_rate,
+        "language": s.language,
+        "gender": s.gender,
+        "duration": s.duration,
+        "education": s.education,
+        "domain": s.domain,
+        "age": s.age,
         "snr": s.snr,
-        "audio_path": f"audio/{idx+1:04d}_clip.wav"
     } for idx, s in enumerate(samples)])
 
     buf = io.BytesIO()
@@ -106,7 +114,8 @@ def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='yoru
     # 1. Add audio files into /audio/
     for idx, s in enumerate(samples):
         audio_filename = f"{zip_folder}/audio/{idx+1:04d}_clip.wav"
-        s3_stream = s3.get_object(Bucket=bucket, Key=s.file_path)['Body']
+        s3_stream = s3.get_object(Bucket=bucket, Key=s.audio_path)['Body']
+        # s3_stream = create_presigned_url(s.audio_path)
         z.write_iter(audio_filename, s3_stream)
 
     # 2. Add metadata (Excel or CSV)
