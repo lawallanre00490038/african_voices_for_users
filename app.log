@@ -659,3 +659,23 @@ AttributeError: type object 'datetime.datetime' has no attribute 'datetime'
 2025-07-29 08:45:37,216 - INFO - 127.0.0.1:49972 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
 2025-07-29 08:45:53,111 - INFO - 127.0.0.1:49973 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 6.01s
 2025-07-29 08:45:57,617 - INFO - 127.0.0.1:49985 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 3.62s
+2025-07-29 10:04:00,039 - INFO - 127.0.0.1:52677 - GET / - Status: [92m200[0m - Time: 0.00s
+2025-07-29 10:04:02,448 - INFO - 127.0.0.1:52677 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-29 10:04:02,664 - INFO - 127.0.0.1:52677 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
+2025-07-29 10:04:11,111 - INFO - 127.0.0.1:52678 - POST /api/v1/auth/signup - Status: [93m403[0m - Time: 0.10s - Reason: {'message': 'A user with this email already exists.', 'error_code': 'user_exists', 'resolution': 'Please use a different email'}
+2025-07-29 10:04:18,056 - INFO - 127.0.0.1:52679 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-29 10:04:18,178 - INFO - 127.0.0.1:52679 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.00s
+2025-07-29 10:04:22,360 - INFO - 127.0.0.1:52679 - POST /api/v1/auth/signup - Status: [93m403[0m - Time: 0.01s - Reason: {'message': 'A user with this email already exists.', 'error_code': 'user_exists', 'resolution': 'Please use a different email'}
+2025-07-29 10:09:07,672 - INFO - 127.0.0.1:52808 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-29 10:09:07,891 - INFO - 127.0.0.1:52808 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.00s
+2025-07-29 10:09:11,274 - INFO - 127.0.0.1:52808 - POST /api/v1/auth/signup - Status: [93m403[0m - Time: 0.02s - Reason: {'message': 'A user with this email already exists.', 'error_code': 'user_exists', 'resolution': 'Please use a different email'}
+2025-07-29 10:10:37,074 - INFO - 127.0.0.1:52873 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-29 10:10:37,323 - INFO - 127.0.0.1:52873 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.04s
+2025-07-29 10:10:46,132 - INFO - 127.0.0.1:52873 - POST /api/v1/auth/signup - Status: [92m200[0m - Time: 4.42s
+2025-07-29 10:11:39,885 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/hausa/preview
+2025-07-29 10:11:39,890 - INFO - 127.0.0.1:52890 - GET /api/v1/download/samples/hausa/preview - Status: [93m404[0m - Time: 1.54s - Reason: No audio samples found
+2025-07-29 10:21:07,060 - INFO - 127.0.0.1:53096 - POST /api/v1/auth/signin - Status: [93m403[0m - Time: 4.55s - Reason: {'message': 'The email is not verified', 'error_code': 'email_not_verified', 'resolution': 'Please verify your email and check for verification details'}
+2025-07-29 10:23:22,822 - INFO - 127.0.0.1:53136 - POST /api/v1/auth/signup - Status: [92m200[0m - Time: 3.73s
+2025-07-29 10:23:46,006 - INFO - 127.0.0.1:53137 - POST /api/v1/auth/verify-email/ - Status: [92m200[0m - Time: 3.66s
+2025-07-29 10:31:49,561 - INFO - 127.0.0.1:53326 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 8.40s
+2025-07-29 10:32:08,180 - INFO - 127.0.0.1:53327 - GET /api/v1/download/samples/hausa/preview - Status: [92m200[0m - Time: 1.39s
