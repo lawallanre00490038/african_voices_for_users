@@ -27,3 +27,5 @@ httpx
 resend
 boto3
 simpy
+openpyxl
+
