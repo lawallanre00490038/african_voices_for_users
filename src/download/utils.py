@@ -5,7 +5,8 @@ from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from .s3_config import s3
-import datetime
+from typing import Optional
+import datetime, os
 
 async def fetch_subset(session: AsyncSession, language: str, pct: int):
     # Count total number of samples
@@ -26,6 +27,7 @@ async def fetch_subset(session: AsyncSession, language: str, pct: int):
         .limit(count)
     )
     result = await session.execute(stmt)
+    print(result)
     return result.scalars().all()
 
 
@@ -33,7 +35,7 @@ def estimate_total_size(samples: list, bucket: str) -> int:
     """Estimate total size of ZIP content in bytes."""
     total = 0
     for s in samples:
-        head = s3.head_object(Bucket=bucket, Key=s.audio_path)
+        head = s3.head_object(Bucket=bucket, Key=f"data/{s.audio_path}")
         total += head['ContentLength']
     return total
 
@@ -44,7 +46,7 @@ def generate_metadata_buffer(samples, as_excel=True):
         "speaker_id": s.speaker_id,
         "transcript": s.transcript,
         "transcript_id": s.transcript_id,
-        "audio_path": f"audio/{idx+1:04d}_clip.wav",
+        "audio_path": f"audio/{s.audio_path}",
         "sample_rate": s.sample_rate,
         "category": s.category,
         "language": s.language,
@@ -84,8 +86,8 @@ def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int) -
         ├── metadata.{"xlsx" if as_excel else "csv"}   - Tabular data with metadata
         ├── README.txt                                 - This file
         └── audio/                                     - Folder with audio clips
-            ├── 0001_clip.wav
-            ├── 0002_clip.wav
+            ├── hau_m_HS1M2_AK1_001.wav
+            ├── hau_m_HS1M2_AK1_002.wav
             └── ...
 
         📌 Notes
@@ -102,7 +104,7 @@ def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int) -
 
 
 
-def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='yoruba', pct=10):
+def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
     import zipstream
     import datetime
 
@@ -112,11 +114,10 @@ def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='yoru
 
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
 
-    # 1. Add audio files into /audio/
+    # # 1. Add audio files into /audio/
     for idx, s in enumerate(samples):
-        audio_filename = f"{zip_folder}/audio/{idx+1:04d}_clip.wav"
-        s3_stream = s3.get_object(Bucket=bucket, Key=s.audio_path)['Body']
-        # s3_stream = create_presigned_url(s.audio_path)
+        audio_filename = f"{zip_folder}/audio/{s.audio_path}"
+        s3_stream = s3.get_object(Bucket=bucket, Key=f"data/{s.audio_path}")['Body']
         z.write_iter(audio_filename, s3_stream)
 
     # 2. Add metadata (Excel or CSV)

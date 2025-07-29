@@ -28,8 +28,6 @@ class AdminService:
         func.count(Feedback.id).label("feedback_count"),
     ).join(
         DownloadLog, DownloadLog.dataset_id == AudioSample.dataset_id
-    ).join(
-        Feedback, Feedback.audio_id == AudioSample.id
     ).group_by(AudioSample.language)
 
     if language:
@@ -57,11 +55,11 @@ class AdminService:
   @staticmethod
   async def list_feedback(session: AsyncSession, language: str | None = None, limit: int = 100):
     stmt = (
-      select(Feedback, AudioSample)
-      .join(AudioSample, Feedback.audio_id == AudioSample.id)
-      .order_by(Feedback.submitted_at.desc())
+      select(Feedback)
+      .order_by(Feedback.created_at.desc())
       .limit(limit)
     )
+
     if language:
       stmt = stmt.where(AudioSample.language == language)
 
