@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, BackgroundTasks, Query
-from sqlmodel import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import StreamingResponse
 from src.db.db import get_session
