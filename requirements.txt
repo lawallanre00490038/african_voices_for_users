@@ -26,6 +26,6 @@ pydantic[email]
 httpx
 resend
 boto3
-simpy
+sympy
 openpyxl
 
