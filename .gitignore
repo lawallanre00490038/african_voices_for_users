@@ -1,3 +1,6 @@
 venv/
 MYREADME.md
 .env
+
+samples/
+__pycache__/
