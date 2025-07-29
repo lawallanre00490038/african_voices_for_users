@@ -70,7 +70,7 @@ class DownloadService:
                 "domain": s.domain,
                 "age": s.age,
                 "snr": s.snr,
-                "audio_path": create_presigned_url(s.audio_path),
+                "audio_path": create_presigned_url(f"data/{s.audio_path}"),
             }
             for s in samples
         ]

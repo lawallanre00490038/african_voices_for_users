@@ -36,7 +36,7 @@ INSERT INTO audiosample (
 (
     gen_random_uuid(),
     :'dataset_id',
-    'data/hau_m_HS1M2_AK1_001.wav',
+    'hau_m_HS1M2_AK1_001.wav',
     4.714,
     'Nakan yi wa marayun murmushi duk lokacin da na gan su.',
     'HS1M2',
@@ -56,7 +56,7 @@ INSERT INTO audiosample (
 (
     gen_random_uuid(),
     :'dataset_id',
-    'data/hau_m_HS1M2_AK1_002.wav',
+    'hau_m_HS1M2_AK1_002.wav',
     4.474,
     'Binta tana ba su ruwa tun kafin ma su nema.',
     'HS1M2',
@@ -76,7 +76,7 @@ INSERT INTO audiosample (
 (
     gen_random_uuid(),
     :'dataset_id',
-    'data/hau_m_HS1M2_AK1_003.wav',
+    'hau_m_HS1M2_AK1_003.wav',
     5.154,
     'Mukan yi wa mutane sannu duk lokacin da muka ga suna aiki.',
     'HS1M2',
@@ -97,7 +97,7 @@ INSERT INTO audiosample (
     gen_random_uuid(),
     :'dataset_id',
     -- If your source file for the 4th row is actually 004.wav, change the next line accordingly.
-    'data/hau_m_HS1M2_AK1_004.wav',
+    'hau_m_HS1M2_AK1_004.wav',
     5.674,
     'Tana da kirki da mutunci sosai, domin tana gaishe ni koyaushe.',
     'HS1M2',
