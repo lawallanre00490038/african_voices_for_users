@@ -1,7 +1,7 @@
 from fastapi import HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from sqlmodel import select, and_
-from src.db.models import AudioSample, DownloadLog
+from src.db.models import AudioSample, DownloadLog, Categroy
 from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
@@ -20,6 +20,7 @@ class DownloadService:
         session: AsyncSession,
         language: str,
         limit: int = 10,
+        category: str = Categroy.read,
         gender: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
@@ -32,6 +33,8 @@ class DownloadService:
 
         if gender:
             filters.append(AudioSample.gender == gender)
+        if category:
+            filters.append(AudioSample.category == category)
         if age_group:
             filters.append(AudioSample.age == age_group)
         if education:
@@ -61,7 +64,9 @@ class DownloadService:
                 "sample_rate": s.sample_rate,
                 "gender": s.gender,
                 "duration": s.duration,
+                "category": s.category,
                 "education": s.education,
+                "language": s.language,
                 "domain": s.domain,
                 "age": s.age,
                 "snr": s.snr,
@@ -72,6 +77,27 @@ class DownloadService:
         return {"samples": urls}
 
 
+    async def estimate_zip_size_only(
+        self,
+        language: str,
+        pct: int,
+        session: AsyncSession
+    ) -> dict:
+        if language not in SUPPORTED_LANGUAGES:
+            raise HTTPException(400, f"Unsupported language: {language}")
+        if pct not in VALID_PERCENTAGES:
+            raise HTTPException(400, f"Invalid percentage: {pct}")
+
+        samples = await fetch_subset(session, language, pct)
+        if not samples:
+            raise HTTPException(404, "No samples available")
+
+        est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
+        return {
+            "estimated_size_bytes": est_size_bytes,
+            "estimated_size_mb": round(est_size_bytes / (1024**2), 2),
+            "sample_count": len(samples),
+        }
 
   
     async def download_zip_with_metadata(
@@ -104,8 +130,8 @@ class DownloadService:
         await session.commit() 
 
         # Optional: Estimate ZIP size (e.g., for showing on frontend)
-        est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
-        print(f"Estimated ZIP size: {round(est_size_bytes / (1024**2), 2)} MB")
+        # est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
+        # print(f"Estimated ZIP size: {round(est_size_bytes / (1024**2), 2)} MB")
 
         # Stream ZIP
         zip_stream, zip_filename = stream_zip_with_metadata(

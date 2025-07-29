@@ -16,17 +16,16 @@ s3 = boto3.client(
 BUCKET = settings.S3_BUCKET_NAME
 
 
-
 SUPPORTED_LANGUAGES = {"yoruba", "hausa", "pidgin", "igbo"}
 
 COLUMNS=[
-        "transcript", "sample_rate", "snr",
-        "transcript_id", "speaker_id",
-        "audio_path", "language", "gender", "duration", "age"
-    ]
+    "transcript", "sample_rate", "snr",
+    "transcript_id", "speaker_id", "category",
+    "audio_path", "language", "gender", "duration", "age"
+]
 
 VALID_PERCENTAGES = {5, 20, 40, 50, 60, 80, 100}
-
+VALID_CATEGORIES = {"read", "spontaneous"}
 
 
 

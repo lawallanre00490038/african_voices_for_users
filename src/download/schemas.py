@@ -10,7 +10,9 @@ class AudioSamplePreview(BaseModel):
     speaker_id: str
     sample_rate: int
     gender: str
+    category: str
     duration: float
+    language: str
     education: Optional[str] = None
     domain: str
     age: int
@@ -19,3 +21,10 @@ class AudioSamplePreview(BaseModel):
 
 class AudioPreviewResponse(BaseModel):
     samples: List[AudioSamplePreview]
+
+
+
+class EstimatedSizeResponse(BaseModel):
+    estimated_size_bytes: int
+    estimated_size_mb: float
+    sample_count: int

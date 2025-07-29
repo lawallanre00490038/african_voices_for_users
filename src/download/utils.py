@@ -46,6 +46,7 @@ def generate_metadata_buffer(samples, as_excel=True):
         "transcript_id": s.transcript_id,
         "audio_path": f"audio/{idx+1:04d}_clip.wav",
         "sample_rate": s.sample_rate,
+        "category": s.category,
         "language": s.language,
         "gender": s.gender,
         "duration": s.duration,

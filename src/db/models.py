@@ -13,6 +13,11 @@ class RoleEnum(str, Enum):
     user = "user"
     admin = "admin"
 
+class Categroy(str, Enum):
+    read = "read"
+    spontaneous = "spontaneous"
+    read_as_spontaneous = "read_as_spontaneous"
+
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
@@ -40,7 +45,6 @@ class User(SQLModel, table=True):
 class AudioSample(SQLModel, table=True):
     __table_args__ = (
         CheckConstraint("snr >= 0", name="check_snr_non_negative"),
-        CheckConstraint("language IN ('pidgin','hausa','yoruba','igbo')", name="check_valid_language"),
         CheckConstraint("gender IN ('male','female')", name="check_valid_gender"),
     )
 
@@ -53,6 +57,7 @@ class AudioSample(SQLModel, table=True):
         )
     )
     dataset_id: str = Field(foreign_key="dataset.id")
+    category: str = Field(sa_column=Column(pg.VARCHAR, default=Categroy.read))
     audio_path: str
     duration: float
     transcript: Optional[str] = None
