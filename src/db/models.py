@@ -6,6 +6,7 @@ from sqlalchemy.types import TIMESTAMP
 from sqlalchemy.sql import func
 import uuid
 from enum import Enum
+from sqlalchemy import JSON
 
 
 class RoleEnum(str, Enum):
@@ -52,15 +53,24 @@ class AudioSample(SQLModel, table=True):
         )
     )
     dataset_id: str = Field(foreign_key="dataset.id")
-    file_path: str
+    audio_path: str
     duration: float
-    transcription: Optional[str] = None
-    language: str
+    transcript: Optional[str] = None
+    speaker_id: Optional[str] = None
+    transcript_id: Optional[str] = None
+    language: str = Field(default="pidgin")
     sample_rate: int = Field(default=80000)
     snr: float = Field(default=40.0)
-    gender: str
+    approval: str = Field(default="approved")
+    gender: str = Field(default="male")
+    age: Optional[int] = Field(default=25)
+    education: Optional[str] = Field(default=None)
+    domain: Optional[str] = Field(default="Finance")
+
     uploaded_at: datetime = Field(default_factory=datetime.utcnow)
     created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+
+
 
 
 
@@ -129,6 +139,7 @@ class DownloadLog(SQLModel, table=True):
 
 
 # User feedback. The feedback should be a list
+
 class Feedback(SQLModel, table=True):
     __tablename__ = "feedback"
 
@@ -137,19 +148,31 @@ class Feedback(SQLModel, table=True):
             pg.VARCHAR,
             nullable=False,
             primary_key=True,
-            default= lambda: str(uuid.uuid4())
+            default=lambda: str(uuid.uuid4())
         )
     )
-    
 
     user_id: Optional[str] = Field(foreign_key="users.id", nullable=True, default=None)
-    audio_id: Optional[str] = Field(foreign_key="audiosample.id", nullable=True, default=None)
-    fullname: Optional[str] =  Field(nullable=True, default=None)
+    fullname: Optional[str] = Field(nullable=True, default=None)
     email: Optional[str] = Field(nullable=True, default=None)
-    feedback_text: str = Field(nullable=False)
+
+    # Star rating (1–5)
+    rating: Optional[int] = Field(default=None)
+
+    # List of selected issues
+    issues: Optional[List[str]] = Field(
+        sa_column=Column(JSON, default=list)
+    )
+
+    # Other issue (free text)
+    other_issue: Optional[str] = Field(default=None)
+
+    # Suggestions for improvement
+    suggestions: Optional[str] = Field(default=None)
+
     created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
-    user: "User" = Relationship(back_populates="feedback")
-    audio: "AudioSample" = Relationship(back_populates="feedback")
+
+    user: Optional["User"] = Relationship(back_populates="feedback")
 
     def __repr__(self):
-        return f"Feedback(user_id={self.user_id}, feedback_text={self.feedback_text})"
+        return f"Feedback(user_id={self.user_id}, rating={self.rating}, issues={self.issues})"

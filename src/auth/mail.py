@@ -1,7 +1,7 @@
 import resend
 from src.config import settings
 
-# Initialize your Resend API key once
+
 resend.api_key = settings.RESEND_API_KEY 
 
 def send_verification_email(to_email: str, name: str, verification_token: str):
@@ -14,7 +14,7 @@ def send_verification_email(to_email: str, name: str, verification_token: str):
         "html": f"""
             <html>
                 <body>
-                    <h2>Welcome to the AI for Governance Platform/h2>
+                    <h2>Welcome to the African Voices Platform/h2>
                     <h4>Email Verification</h4>
                     <p>Hello {name}, Click the link below to verify your email address:</p>
                     <a href="{verification_link}">Verify Email</a>
