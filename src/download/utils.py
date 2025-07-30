@@ -6,7 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from .s3_config import s3
 from typing import Optional
-import datetime, os
+import datetime
+import requests
 
 async def fetch_subset(session: AsyncSession, language: str, pct: int):
     # Count total number of samples
@@ -31,13 +32,20 @@ async def fetch_subset(session: AsyncSession, language: str, pct: int):
     return result.scalars().all()
 
 
-def estimate_total_size(samples: list, bucket: str) -> int:
-    """Estimate total size of ZIP content in bytes."""
+def estimate_total_size(samples: list) -> int:
+    """
+    Estimate total size of audio files in bytes from their public storage_link URLs.
+    """
     total = 0
     for s in samples:
-        head = s3.head_object(Bucket=bucket, Key=f"data/{s.audio_path}")
-        total += head['ContentLength']
+        try:
+            response = requests.head(s.storage_link, allow_redirects=True, timeout=5)
+            response.raise_for_status()
+            total += int(response.headers.get("Content-Length", 0))
+        except Exception as e:
+            print(f"Failed to fetch size for {s.storage_link}: {e}")
     return total
+
 
 
 def generate_metadata_buffer(samples, as_excel=True):
@@ -46,7 +54,7 @@ def generate_metadata_buffer(samples, as_excel=True):
         "speaker_id": s.speaker_id,
         "transcript": s.transcript,
         "transcript_id": s.transcript_id,
-        "audio_path": f"audio/{s.audio_path}",
+        "audio_path": f"audio/{s.audio_name}",
         "sample_rate": s.sample_rate,
         "category": s.category,
         "language": s.language,
@@ -114,11 +122,11 @@ def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='haus
 
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
 
-    # # 1. Add audio files into /audio/
-    for idx, s in enumerate(samples):
-        audio_filename = f"{zip_folder}/audio/{s.audio_path}"
-        s3_stream = s3.get_object(Bucket=bucket, Key=f"data/{s.audio_path}")['Body']
-        z.write_iter(audio_filename, s3_stream)
+    for s in samples:
+        audio_filename = f"{zip_folder}/audio/{s.audio_name}"
+        resp = requests.get(s.storage_link, stream=True)
+        if resp.status_code == 200:
+            z.write_iter(audio_filename, resp.iter_content(chunk_size=4096))
 
     # 2. Add metadata (Excel or CSV)
     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)

@@ -70,7 +70,8 @@ class DownloadService:
                 "domain": s.domain,
                 "age": s.age,
                 "snr": s.snr,
-                "audio_path": create_presigned_url(f"data/{s.audio_path}"),
+                "audio_name": s.audio_name,
+                "storage_link": s.storage_link,
             }
             for s in samples
         ]
@@ -92,7 +93,7 @@ class DownloadService:
         if not samples:
             raise HTTPException(404, "No samples available")
 
-        est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
+        est_size_bytes = estimate_total_size(samples)
         return {
             "estimated_size_bytes": est_size_bytes,
             "estimated_size_mb": round(est_size_bytes / (1024**2), 2),
@@ -128,10 +129,6 @@ class DownloadService:
             ),
         )
         await session.commit() 
-
-        # Optional: Estimate ZIP size (e.g., for showing on frontend)
-        # est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
-        # print(f"Estimated ZIP size: {round(est_size_bytes / (1024**2), 2)} MB")
 
         # Stream ZIP
         zip_stream, zip_filename = stream_zip_with_metadata(

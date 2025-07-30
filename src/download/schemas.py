@@ -4,7 +4,6 @@ from typing import List, Optional
 
 class AudioSamplePreview(BaseModel):
     id: str
-    audio_path: str
     transcript: str
     transcript_id: str
     speaker_id: str
@@ -14,6 +13,10 @@ class AudioSamplePreview(BaseModel):
     duration: float
     language: str
     education: Optional[str] = None
+
+    storage_link: Optional[str] = None
+    audio_name: Optional[str] = None
+
     domain: str
     age: int
     snr: float

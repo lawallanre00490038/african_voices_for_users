@@ -5,3 +5,8 @@ MYREADME.md
 samples/
 __pycache__/
 
+
+
+google_upload_to_db.py
+drive_client.py
+account.json
