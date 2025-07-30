@@ -86,8 +86,8 @@ class DownloadService:
     ) -> dict:
         if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}")
-        if pct not in VALID_PERCENTAGES:
-            raise HTTPException(400, f"Invalid percentage: {pct}")
+        # if pct not in VALID_PERCENTAGES:
+        #     raise HTTPException(400, f"Invalid percentage: {pct}")
 
         samples = await fetch_subset(session, language, pct)
         if not samples:
