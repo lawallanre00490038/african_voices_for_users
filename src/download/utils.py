@@ -32,6 +32,36 @@ async def fetch_subset(session: AsyncSession, language: str, pct: int):
     return result.scalars().all()
 
 
+# def estimate_total_size(samples: list) -> int:
+#     """
+#     Estimate total size of audio files in bytes from their public storage_link URLs.
+#     """
+#     total = 0
+#     for s in samples:
+#         try:
+#             response = requests.head(s.storage_link, allow_redirects=True, timeout=5)
+#             response.raise_for_status()
+#             total += int(response.headers.get("Content-Length", 0))
+#         except Exception as e:
+#             print(f"Failed to fetch size for {s.storage_link}: {e}")
+#     return total
+
+
+# def estimate_total_size(samples: list) -> int:
+#     """Estimate total size of audio files via their GCS public links."""
+#     total = 0
+#     for s in samples:
+#         try:
+#             response = requests.head(s["storage_link"], timeout=10)
+#             response.raise_for_status()
+#             size = int(response.headers.get("Content-Length", 0))
+#             total += size
+#         except Exception as e:
+#             print(f"Failed to get size for {s.storage_link}: {e}")
+#     return total
+
+
+
 def estimate_total_size(samples: list) -> int:
     """
     Estimate total size of audio files in bytes from their public storage_link URLs.
