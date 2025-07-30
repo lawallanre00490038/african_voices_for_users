@@ -29,3 +29,11 @@ boto3
 sympy
 openpyxl
 
+gspread
+google-auth
+google-api-python-client 
+pandas
+openpyxl 
+aiofiles
+
+
