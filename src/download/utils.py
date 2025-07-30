@@ -51,19 +51,20 @@ def estimate_total_size(samples: list) -> int:
 def generate_metadata_buffer(samples, as_excel=True):
     """Create metadata buffer in either Excel or CSV."""
     df = pd.DataFrame([{
-        "speaker_id": s.speaker_id,
-        "transcript": s.transcript,
-        "transcript_id": s.transcript_id,
-        "audio_path": f"audio/{s.audio_name}",
-        "sample_rate": s.sample_rate,
-        "category": s.category,
-        "language": s.language,
+        "speaker_id": s.annotator_id,
+        "transcript_id": s.sentence_id,
+        "transcript": s.sentence,
+        "storage_link": s.storage_link,
+        "audio_path": f"audio/{s.sentence_id}",
         "gender": s.gender,
-        "duration": s.duration,
-        "education": s.education,
-        "domain": s.domain,
-        "age": s.age,
+        "age_group": s.age_group,
+        "edu_level": s.edu_level,
+        "durations": s.durations,
+        "language": s.language,
+        "edu_level": s.edu_level,
         "snr": s.snr,
+        "domain": s.domain,
+        "category": s.category,
     } for idx, s in enumerate(samples)])
 
     buf = io.BytesIO()

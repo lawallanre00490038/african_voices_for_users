@@ -49,6 +49,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
+
 app = FastAPI(
     lifespan=lifespan,
     title="African Voices API",
