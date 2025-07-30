@@ -9,7 +9,6 @@ from typing import Optional
 import datetime
 import requests
 import requests
-from pydub import AudioSegment
 from io import BytesIO
 from math import floor
 import aiohttp
@@ -59,71 +58,21 @@ async def fetch_subset(session: AsyncSession, language: str, pct: int | float):
     return response
 
 
-# def estimate_total_size(samples: list) -> int:
-#     """
-#     Estimate total size of audio files in bytes from their public storage_link URLs.
-#     """
-#     total = 0
-#     for s in samples:
-#         try:
-#             response = requests.head(s.storage_link, allow_redirects=True, timeout=5)
-#             response.raise_for_status()
-#             total += int(response.headers.get("Content-Length", 0))
-#         except Exception as e:
-#             print(f"Failed to fetch size for {s.storage_link}: {e}")
-#     return total
-
-
-# def estimate_total_size(samples: list) -> int:
-#     """Estimate total size of audio files via their GCS public links."""
-#     total = 0
-#     for s in samples:
-#         try:
-#             response = requests.head(s["storage_link"], timeout=10)
-#             response.raise_for_status()
-#             size = int(response.headers.get("Content-Length", 0))
-#             total += size
-#         except Exception as e:
-#             print(f"Failed to get size for {s.storage_link}: {e}")
-#     return total
-
-
 
 def estimate_total_size(samples: list) -> int:
     """
     Estimate total size of audio files in bytes from their public storage_link URLs.
     """
-    total_size = 0
-    total_durations = 0
+    total = 0
     for s in samples:
         try:
-            # response = requests.head(s.storage_link, allow_redirects=True, timeout=5)
-            # response.raise_for_status()
-            # total += int(response.headers.get("Content-Length", 0))
-
-            duration_sec, size_bytes = pudub_estimate_duration(s.storage_link)
-            print("The duration of the audio is: ", duration_sec)
-            print("The size of the audio is: ", size_bytes)
-            total_size += size_bytes
-            total_durations += duration_sec
+            response = requests.head(s.storage_link, allow_redirects=True, timeout=5)
+            response.raise_for_status()
+            total += int(response.headers.get("Content-Length", 0))
 
         except Exception as e:
             print(f"Failed to fetch size for {s.storage_link}: {e}")
-    return total_size, total_durations
-
-
-def pudub_estimate_duration(url: str) -> float:
-    response = requests.get(url)
-    if response.status_code == 200:
-        audio = AudioSegment.from_file(BytesIO(response.content), format="wav")
-        duration_sec = len(audio) / 1000.0
-        size_bytes = len(response.content)
-        print(f"Duration: {duration_sec:.2f} seconds")
-        print(f"Size: {size_bytes} bytes ({size_bytes / (1024*1024):.2f} MB)")
-    else:
-        print(f"Failed to download audio. Status: {response.status_code}")
-    return duration_sec, size_bytes
-
+    return total
 
 
 

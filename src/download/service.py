@@ -6,7 +6,6 @@ from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
 from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES, VALID_PERCENTAGES, create_presigned_url
-import requests
 from src.download.utils import stream_zip_with_metadata, estimate_total_size
 import aiohttp
 import asyncio
