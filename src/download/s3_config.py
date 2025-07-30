@@ -16,7 +16,7 @@ s3 = boto3.client(
 BUCKET = settings.S3_BUCKET_NAME
 
 
-SUPPORTED_LANGUAGES = {"yoruba", "hausa", "pidgin", "igbo"}
+SUPPORTED_LANGUAGES = {"Naija", "Yoruba", "yoruba", "hausa", "pidgin", "igbo"}
 
 COLUMNS=[
     "transcript", "sample_rate", "snr",
