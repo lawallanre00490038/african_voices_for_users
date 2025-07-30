@@ -85,7 +85,7 @@ class DownloadService:
         session: AsyncSession
     ) -> dict:
         if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}")
+            raise HTTPException(400, f"Unsupported language: {language}. Only Naija and Yoruba")
         # if pct not in VALID_PERCENTAGES:
         #     raise HTTPException(400, f"Invalid percentage: {pct}")
 
