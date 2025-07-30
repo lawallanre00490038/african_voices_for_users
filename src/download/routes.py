@@ -6,7 +6,7 @@ from src.auth.utils import get_current_user
 from src.auth.schemas import TokenUser
 from src.download.service import DownloadService
 from src.download.schemas import AudioPreviewResponse, EstimatedSizeResponse
-
+from src.db.models import  Categroy
 download_router = APIRouter()
 download_service = DownloadService()
 
@@ -26,6 +26,7 @@ async def preview_audio_samples(
     age: str | None = Query(None),
     education: str | None = Query(None),
     domain: str | None = Query(None),
+    category: Categroy | None = Query(Categroy.read, alias="category"),
     session: AsyncSession = Depends(get_session),
     _current: TokenUser = Depends(get_current_user),
 ):
@@ -34,7 +35,7 @@ async def preview_audio_samples(
      Get a list of audio samples for preview.
     """
     return await download_service.preview_audio_samples(
-        session, language, limit, gender, age, education, domain
+        session=session, language=language, limit=limit, gender=gender, age_group=age, education=education, domain=domain, category=category
     )
 
 

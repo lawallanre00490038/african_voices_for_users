@@ -2651,3 +2651,208 @@ TypeError: 'AudioSample' object is not subscriptable
 2025-07-30 17:55:54,538 - INFO - 127.0.0.1:56177 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.01s
 2025-07-30 17:55:55,108 - INFO - 127.0.0.1:56177 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.11s
 2025-07-30 17:56:16,157 - INFO - 127.0.0.1:56178 - GET /api/v1/download/zip/estimate-size/Naija/2 - Status: [92m200[0m - Time: 9.35s
+2025-07-30 18:02:47,986 - INFO - 127.0.0.1:56412 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:02:48,409 - INFO - 127.0.0.1:56412 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.10s
+2025-07-30 18:12:15,222 - INFO - 127.0.0.1:57159 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.01s
+2025-07-30 18:12:15,549 - INFO - 127.0.0.1:57159 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.10s
+2025-07-30 18:19:16,683 - INFO - 127.0.0.1:57341 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:19:17,189 - INFO - 127.0.0.1:57341 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.10s
+2025-07-30 18:19:35,374 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:19:35,387 - INFO - 127.0.0.1:57342 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 2.40s - Reason: No audio samples found
+2025-07-30 18:19:51,113 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:19:51,115 - INFO - 127.0.0.1:57343 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 2.67s - Reason: No audio samples found
+2025-07-30 18:20:14,445 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:20:14,448 - INFO - 127.0.0.1:57374 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 1.36s - Reason: No audio samples found
+2025-07-30 18:20:24,948 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:20:24,951 - INFO - 127.0.0.1:57375 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 2.02s - Reason: No audio samples found
+2025-07-30 18:20:29,416 - INFO - 127.0.0.1:57375 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:20:29,552 - INFO - 127.0.0.1:57375 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:21:04,587 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:21:04,600 - INFO - 127.0.0.1:57383 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 1.25s - Reason: No audio samples found
+2025-07-30 18:22:24,106 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Yoruba/preview
+2025-07-30 18:22:24,108 - INFO - 127.0.0.1:57407 - GET /api/v1/download/samples/Yoruba/preview - Status: [93m404[0m - Time: 3.85s - Reason: No audio samples found
+2025-07-30 18:27:04,181 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Yoruba/preview
+2025-07-30 18:27:04,185 - INFO - 127.0.0.1:57662 - GET /api/v1/download/samples/Yoruba/preview - Status: [93m404[0m - Time: 3.83s - Reason: No audio samples found
+2025-07-30 18:27:12,788 - INFO - 127.0.0.1:57664 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:27:13,019 - INFO - 127.0.0.1:57664 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.03s
+2025-07-30 18:27:25,928 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:27:25,932 - INFO - 127.0.0.1:57667 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 1.51s - Reason: No audio samples found
+2025-07-30 18:27:38,069 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:27:38,073 - INFO - 127.0.0.1:57674 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 1.85s - Reason: No audio samples found
+2025-07-30 18:28:19,818 - INFO - 127.0.0.1:57696 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:28:20,182 - INFO - 127.0.0.1:57696 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.05s
+2025-07-30 18:28:31,968 - ERROR - HTTPException: No audio samples found at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:28:31,970 - INFO - 127.0.0.1:57697 - GET /api/v1/download/samples/Naija/preview - Status: [93m404[0m - Time: 2.20s - Reason: No audio samples found
+2025-07-30 18:32:49,559 - ERROR - Unhandled error for GET /api/v1/download/samples/Naija/preview
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 151, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\streams\memory.py", line 126, in receive
+    raise EndOfStream from None
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 37, in preview_audio_samples
+    return await download_service.preview_audio_samples(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: DownloadService.preview_audio_samples() got an unexpected keyword argument 'age'
+2025-07-30 18:32:49,602 - ERROR - Unhandled exception at GET /api/v1/download/samples/Naija/preview: DownloadService.preview_audio_samples() got an unexpected keyword argument 'age'
+2025-07-30 18:32:49,650 - ERROR -   + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 183, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    |     raise app_exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 37, in preview_audio_samples
+    |     return await download_service.preview_audio_samples(
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | TypeError: DownloadService.preview_audio_samples() got an unexpected keyword argument 'age'
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 37, in preview_audio_samples
+    return await download_service.preview_audio_samples(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: DownloadService.preview_audio_samples() got an unexpected keyword argument 'age'
+
