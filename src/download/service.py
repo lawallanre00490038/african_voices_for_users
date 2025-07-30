@@ -6,7 +6,7 @@ from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
 from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES, VALID_PERCENTAGES, create_presigned_url
-
+import requests
 from src.download.utils import stream_zip_with_metadata, estimate_total_size
 
 
@@ -36,9 +36,9 @@ class DownloadService:
         if category:
             filters.append(AudioSample.category == category)
         if age_group:
-            filters.append(AudioSample.age == age_group)
+            filters.append(AudioSample.age_group == age_group)
         if education:
-            filters.append(AudioSample.education == education)
+            filters.append(AudioSample.edu_level == education)
         if domain:
             filters.append(AudioSample.domain == domain)
 
@@ -58,19 +58,20 @@ class DownloadService:
         urls = [
             {
                 "id": str(s.id),
-                "transcript": s.transcript,
-                "transcript_id": s.transcript_id,
-                "speaker_id": s.speaker_id,
-                "sample_rate": s.sample_rate,
+                "annotator_id": s.annotator_id,
+                "sentence_id": s.sentence_id,
+                "sentence": s.sentence,
+                "storage_link": s.storage_link,
                 "gender": s.gender,
-                "duration": s.duration,
-                "category": s.category,
-                "education": s.education,
+                "age_group": s.age_group,
+                "edu_level": s.edu_level,
+                "durations": s.durations,
                 "language": s.language,
-                "domain": s.domain,
-                "age": s.age,
+                "edu_level": s.edu_level,
                 "snr": s.snr,
-                "audio_path": create_presigned_url(f"data/{s.audio_path}"),
+                "domain": s.domain,
+                "category": s.category,
+
             }
             for s in samples
         ]
@@ -92,12 +93,14 @@ class DownloadService:
         if not samples:
             raise HTTPException(404, "No samples available")
 
-        est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
+        est_size_bytes = estimate_total_size(samples)
         return {
             "estimated_size_bytes": est_size_bytes,
             "estimated_size_mb": round(est_size_bytes / (1024**2), 2),
             "sample_count": len(samples),
         }
+
+
 
   
     async def download_zip_with_metadata(
