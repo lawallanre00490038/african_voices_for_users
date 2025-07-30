@@ -35,5 +35,6 @@ google-api-python-client
 pandas
 openpyxl 
 aiofiles
+aiohttp
 
 
