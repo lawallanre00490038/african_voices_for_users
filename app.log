@@ -2863,3 +2863,424 @@ TypeError: DownloadService.preview_audio_samples() got an unexpected keyword arg
 2025-07-30 18:34:46,349 - INFO - 127.0.0.1:57903 - GET /api/v1/download/samples/Naija/preview - Status: [93m400[0m - Time: 0.00s - Reason: Unavailable category: Categroy.spontaneous. Only 'Read' and 'Read_as_Spontanueos' are available
 2025-07-30 18:38:44,065 - INFO - 127.0.0.1:58255 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
 2025-07-30 18:38:44,526 - INFO - 127.0.0.1:58255 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
+2025-07-30 18:50:40,749 - INFO - 127.0.0.1:59546 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:50:41,209 - INFO - 127.0.0.1:59546 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
+2025-07-30 18:51:03,816 - INFO - 127.0.0.1:59547 - GET /api/v1/download/samples/Naija/preview - Status: [92m200[0m - Time: 2.45s
+2025-07-30 20:22:17,237 - INFO - 127.0.0.1:61213 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.01s
+2025-07-30 20:22:17,490 - INFO - 127.0.0.1:61213 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.05s
+2025-07-30 20:22:38,543 - INFO - 127.0.0.1:61214 - GET /api/v1/download/zip/estimate-size/Yoruba/2 - Status: [93m401[0m - Time: 0.00s - Reason: {'message': 'An error occurred', 'error_code': 'unauthenticated', 'resolution': 'Please request a new token or signin.'}
+2025-07-30 20:22:51,135 - INFO - 127.0.0.1:61217 - POST /api/v1/auth/signin - Status: [92m200[0m - Time: 3.64s
+2025-07-30 20:30:43,356 - INFO - 127.0.0.1:61792 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:30:43,698 - INFO - 127.0.0.1:61792 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
+2025-07-30 20:33:28,662 - INFO - 127.0.0.1:61969 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:33:28,920 - INFO - 127.0.0.1:61969 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
+2025-07-30 20:36:46,312 - INFO - 127.0.0.1:62242 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:36:46,480 - INFO - 127.0.0.1:62242 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
+2025-07-30 20:42:18,925 - INFO - 127.0.0.1:62768 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:42:19,166 - INFO - 127.0.0.1:62768 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.03s
+2025-07-30 20:44:10,453 - INFO - 127.0.0.1:62769 - GET /api/v1/download/zip/estimate-size/Naija/0.0022 - Status: [92m200[0m - Time: 103.32s
+2025-07-30 20:55:58,183 - INFO - 127.0.0.1:63222 - GET /api/v1/download/zip/estimate-size/Naija/0.0022 - Status: [91m500[0m - Time: 526.71s - Reason: {'message': 'Database error occurred', 'resolution': 'Please try again later', 'error_code': 'database_error'}
+2025-07-30 20:56:41,507 - INFO - 127.0.0.1:64032 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:56:41,697 - INFO - 127.0.0.1:64032 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.05s
+2025-07-30 20:56:53,065 - ERROR - Unhandled error for GET /api/v1/download/zip/estimate-size/Naija/0.0022
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 151, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\streams\memory.py", line 126, in receive
+    raise EndOfStream from None
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 57, in estimate_zip_size
+    return await download_service.estimate_zip_size_only(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 118, in estimate_zip_size_only
+    total_size = await estimate_sizes_async([s.storage_link for s in samples])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: estimate_sizes_async() missing 1 required positional argument: 'urls'
+2025-07-30 20:56:53,156 - ERROR - Unhandled exception at GET /api/v1/download/zip/estimate-size/Naija/0.0022: estimate_sizes_async() missing 1 required positional argument: 'urls'
+2025-07-30 20:56:53,217 - ERROR -   + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 183, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    |     raise app_exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 57, in estimate_zip_size
+    |     return await download_service.estimate_zip_size_only(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 118, in estimate_zip_size_only
+    |     total_size = await estimate_sizes_async([s.storage_link for s in samples])
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | TypeError: estimate_sizes_async() missing 1 required positional argument: 'urls'
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 57, in estimate_zip_size
+    return await download_service.estimate_zip_size_only(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 118, in estimate_zip_size_only
+    total_size = await estimate_sizes_async([s.storage_link for s in samples])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: estimate_sizes_async() missing 1 required positional argument: 'urls'
+
+2025-07-30 20:57:18,843 - INFO - 127.0.0.1:64034 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:57:19,048 - INFO - 127.0.0.1:64034 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:58:19,504 - INFO - 127.0.0.1:64099 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 20:58:19,625 - INFO - 127.0.0.1:64099 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.01s
+2025-07-30 20:58:33,752 - INFO - 127.0.0.1:64100 - GET /api/v1/download/zip/estimate-size/Naija/0.0022 - Status: [92m200[0m - Time: 3.44s
+2025-07-30 20:58:54,611 - INFO - 127.0.0.1:64101 - GET /api/v1/download/zip/estimate-size/Naija/0.002 - Status: [92m200[0m - Time: 2.70s
+2025-07-30 20:59:10,011 - INFO - 127.0.0.1:64135 - GET /api/v1/download/zip/estimate-size/Naija/0.02 - Status: [92m200[0m - Time: 2.58s
+2025-07-30 20:59:31,189 - INFO - 127.0.0.1:64136 - GET /api/v1/download/zip/estimate-size/Naija/0.2 - Status: [92m200[0m - Time: 5.19s
+2025-07-30 20:59:59,831 - INFO - 127.0.0.1:64339 - GET /api/v1/download/zip/estimate-size/Naija/2 - Status: [92m200[0m - Time: 12.69s
+2025-07-30 21:03:17,897 - INFO - 127.0.0.1:64581 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 21:03:18,078 - INFO - 127.0.0.1:64581 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.05s
+2025-07-30 21:03:37,386 - INFO - 127.0.0.1:64582 - GET /api/v1/download/zip/estimate-size/Yoruba/0.05 - Status: [92m200[0m - Time: 3.86s
+2025-07-30 21:04:04,627 - ERROR - HTTPException: Invalid percentage: 0.05 at GET /api/v1/download/zip/Yoruba/0.05
+2025-07-30 21:04:04,627 - INFO - 127.0.0.1:64585 - GET /api/v1/download/zip/Yoruba/0.05 - Status: [93m400[0m - Time: 0.00s - Reason: Invalid percentage: 0.05
+2025-07-30 21:10:17,325 - INFO - 127.0.0.1:64937 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 21:10:17,566 - INFO - 127.0.0.1:64937 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
+2025-07-30 21:10:35,660 - ERROR - Unhandled error for GET /api/v1/download/zip/Yoruba/0.05
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 151, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\streams\memory.py", line 126, in receive
+    raise EndOfStream from None
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 75, in download_zip
+    return await download_service.download_zip_with_metadata(language, pct, session, background_tasks, current_user, as_excel=as_excel)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 157, in download_zip_with_metadata
+    zip_stream, zip_filename = stream_zip_with_metadata(
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 208, in stream_zip_with_metadata
+    audio_contents = asyncio.run(fetch_all(samples))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 190, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+2025-07-30 21:10:35,707 - ERROR - Unhandled exception at GET /api/v1/download/zip/Yoruba/0.05: asyncio.run() cannot be called from a running event loop
+2025-07-30 21:10:35,732 - ERROR -   + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 183, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    |     raise app_exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 75, in download_zip
+    |     return await download_service.download_zip_with_metadata(language, pct, session, background_tasks, current_user, as_excel=as_excel)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 157, in download_zip_with_metadata
+    |     zip_stream, zip_filename = stream_zip_with_metadata(
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 208, in stream_zip_with_metadata
+    |     audio_contents = asyncio.run(fetch_all(samples))
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 190, in run
+    |     raise RuntimeError(
+    | RuntimeError: asyncio.run() cannot be called from a running event loop
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 75, in download_zip
+    return await download_service.download_zip_with_metadata(language, pct, session, background_tasks, current_user, as_excel=as_excel)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 157, in download_zip_with_metadata
+    zip_stream, zip_filename = stream_zip_with_metadata(
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 208, in stream_zip_with_metadata
+    audio_contents = asyncio.run(fetch_all(samples))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 190, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+2025-07-30 21:13:35,673 - INFO - 127.0.0.1:65112 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 21:13:35,892 - INFO - 127.0.0.1:65112 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
+2025-07-30 21:13:50,226 - INFO - 127.0.0.1:65113 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 21:13:50,450 - INFO - 127.0.0.1:65113 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.00s
+2025-07-30 21:14:37,746 - INFO - 127.0.0.1:65114 - GET /api/v1/download/zip/Yoruba/0.05 - Status: [92m200[0m - Time: 38.07s
+2025-07-30 21:15:05,194 - INFO - 127.0.0.1:65250 - GET /api/v1/download/zip/estimate-size/Yoruba/0.05 - Status: [92m200[0m - Time: 15.48s
+2025-07-30 21:15:50,515 - INFO - 127.0.0.1:65196 - GET /api/v1/download/zip/Yoruba/0.05 - Status: [92m200[0m - Time: 72.53s
