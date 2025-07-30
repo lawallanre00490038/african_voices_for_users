@@ -4,6 +4,6 @@ VALUES (
     'hausa',  -- Replace with your desired or with the language name instead
     'Sample Dataset',
     'This is a test dataset entry',
-    'af8302b1-e4b7-4fc2-8a74-a88576f0717f',  -- Replace with your user ID
+    '74657c64-8b48-49fb-9ef4-aaced1084fea',  -- Replace with your user ID
     NOW()
 );

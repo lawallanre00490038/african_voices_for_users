@@ -202,3 +202,780 @@ botocore.exceptions.ReadTimeoutError: Read timeout on endpoint URL: "None"
 2025-07-29 13:29:15,974 - INFO - 127.0.0.1:64270 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 6.09s
 2025-07-29 13:29:23,036 - INFO - 127.0.0.1:64277 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 5.11s
 2025-07-29 13:51:53,272 - INFO - 127.0.0.1:64986 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 7.27s
+2025-07-30 09:23:55,530 - INFO - 127.0.0.1:59172 - GET / - Status: [92m200[0m - Time: 0.00s
+2025-07-30 09:24:01,376 - INFO - 127.0.0.1:59173 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 09:24:01,724 - INFO - 127.0.0.1:59173 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.10s
+2025-07-30 09:24:37,706 - INFO - 127.0.0.1:59174 - GET /api/v1/download/samples/hausa/preview - Status: [93m401[0m - Time: 0.00s - Reason: {'message': 'An error occurred', 'error_code': 'unauthenticated', 'resolution': 'Please request a new token or signin.'}
+2025-07-30 09:24:52,604 - INFO - 127.0.0.1:59214 - POST /api/v1/auth/signin - Status: [92m200[0m - Time: 3.18s
+2025-07-30 09:25:05,814 - INFO - 127.0.0.1:59215 - GET /api/v1/download/samples/hausa/preview - Status: [92m200[0m - Time: 1.51s
+2025-07-30 09:25:40,732 - INFO - 127.0.0.1:59253 - GET /api/v1/download/zip/estimate-size/hausa/50 - Status: [92m200[0m - Time: 4.16s
+2025-07-30 09:26:12,437 - INFO - 127.0.0.1:59254 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 7.08s
+2025-07-30 09:26:21,965 - INFO - 127.0.0.1:59282 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 3.36s
+2025-07-30 09:44:45,005 - INFO - 127.0.0.1:59746 - GET /api/v1/download/zip/hausa/100 - Status: [92m200[0m - Time: 12.81s
+2025-07-30 09:44:57,383 - INFO - 127.0.0.1:59755 - GET /api/v1/download/zip/hausa/100 - Status: [92m200[0m - Time: 11.97s
+2025-07-30 11:23:55,268 - INFO - 127.0.0.1:52717 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 11:23:55,474 - INFO - 127.0.0.1:52717 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.05s
+2025-07-30 11:31:03,360 - INFO - 127.0.0.1:53063 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 11:31:03,601 - INFO - 127.0.0.1:53063 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
+2025-07-30 11:31:15,438 - INFO - 127.0.0.1:53069 - POST /api/v1/auth/signup - Status: [92m200[0m - Time: 4.52s
+2025-07-30 11:31:34,630 - INFO - 127.0.0.1:53081 - POST /api/v1/auth/verify-email/ - Status: [92m200[0m - Time: 3.13s
+2025-07-30 11:53:12,221 - ERROR - Unhandled error for GET /api/v1/download/samples/hausa/preview
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 151, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\streams\memory.py", line 126, in receive
+    raise EndOfStream from None
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 36, in preview_audio_samples
+    return await download_service.preview_audio_samples(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 76, in preview_audio_samples
+    "size": s.size,
+            ^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\pydantic\main.py", line 991, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'AudioSample' object has no attribute 'size'
+2025-07-30 11:53:12,295 - ERROR - Unhandled exception at GET /api/v1/download/samples/hausa/preview: 'AudioSample' object has no attribute 'size'
+2025-07-30 11:53:12,366 - ERROR -   + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 183, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    |     raise app_exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 36, in preview_audio_samples
+    |     return await download_service.preview_audio_samples(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 76, in preview_audio_samples
+    |     "size": s.size,
+    |             ^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\pydantic\main.py", line 991, in __getattr__
+    |     raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+    | AttributeError: 'AudioSample' object has no attribute 'size'
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 36, in preview_audio_samples
+    return await download_service.preview_audio_samples(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 76, in preview_audio_samples
+    "size": s.size,
+            ^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\pydantic\main.py", line 991, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'AudioSample' object has no attribute 'size'
+
+2025-07-30 11:54:05,239 - ERROR - Unhandled error for GET /api/v1/download/samples/hausa/preview
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 151, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\streams\memory.py", line 126, in receive
+    raise EndOfStream from None
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 328, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 177, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'samples', 0, 'audio_path'), 'msg': 'Field required', 'input': {'id': '79032dfd-12ae-48e1-95d5-02a6c3d4409f', 'transcript': 'Binta tana ba su ruwa tun kafin ma su nema.', 'transcript_id': 'hau_AK1_002', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.474, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_002.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_002.wav?Expires=1777224767&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=CsO%2BIEwQcEv6eWrPOKzAcTvPwX4Es6diRwY2mQc7HqyAj6ztVbNDXhZH6qhObz8f2agWDY6ctBxbMtO1GXAAG0mUmmI6oVDdXS0g3ccmqIJG%2BxCkA60N5VocZQvPufPff%2FmMSABHrotDXKYOYngC1oqjxlikeVA31OKnP7m8GJRIfXbKsX%2Bnlc2EzKw9oMsbcYuTgKfiotfzQoFKCSWysHx%2F4ML4PsN5IaD%2FBP63UMPSTuxBFVdV0khM%2F4yCtaVZG%2BBlE%2FKwqHvztnpunq4Qj5RGJNd91U1USfLtoftwlhVyyM4BF%2Buwh%2BwqGziuMpAojwFnxKv%2BMVr6C7C2kdhbyg%3D%3D'}}
+  {'type': 'missing', 'loc': ('response', 'samples', 1, 'audio_path'), 'msg': 'Field required', 'input': {'id': '936b543c-b328-4256-aff5-a4294c981640', 'transcript': 'Nakan yi wa marayun murmushi duk lokacin da na gan su.', 'transcript_id': 'hau_AK1_001', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.714, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_001.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_001.wav?Expires=1777224802&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=x%2F1sY6uXY9T8P5lBhODV0MLy7FTwIFOC5IeHIZJ8fBFbWMpyW208ZoxQ5l3CMFOS9RtYzVJX0rXr09LzrB8IFyA1R%2BRjRpV%2BKRnddMeTDF4IqoxSXbLGT0MjEOSDeNKaOu4Xn%2BLOjv3EBQ3ry4vbqU4pV7gixT3XHsZsVCzLBHEYTTRX12Tc36q5sqZW1Xz%2B4kWwHpSrT%2BoVg%2BTWh5VCzCD1u%2BBSX%2B62zPRWU4IJOYnFEZla6vk%2FR0D7f7E5ekyZP%2FpFsdngEQjd5XL9JAqoIWpML%2F%2BPbliBc1dTd1IEP0Fr8cxdxhYExU7UfAID1vYBcwAG%2BVbrCBauYJ37%2FAD2iA%3D%3D'}}
+
+2025-07-30 11:54:05,271 - ERROR - Unhandled exception at GET /api/v1/download/samples/hausa/preview: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'samples', 0, 'audio_path'), 'msg': 'Field required', 'input': {'id': '79032dfd-12ae-48e1-95d5-02a6c3d4409f', 'transcript': 'Binta tana ba su ruwa tun kafin ma su nema.', 'transcript_id': 'hau_AK1_002', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.474, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_002.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_002.wav?Expires=1777224767&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=CsO%2BIEwQcEv6eWrPOKzAcTvPwX4Es6diRwY2mQc7HqyAj6ztVbNDXhZH6qhObz8f2agWDY6ctBxbMtO1GXAAG0mUmmI6oVDdXS0g3ccmqIJG%2BxCkA60N5VocZQvPufPff%2FmMSABHrotDXKYOYngC1oqjxlikeVA31OKnP7m8GJRIfXbKsX%2Bnlc2EzKw9oMsbcYuTgKfiotfzQoFKCSWysHx%2F4ML4PsN5IaD%2FBP63UMPSTuxBFVdV0khM%2F4yCtaVZG%2BBlE%2FKwqHvztnpunq4Qj5RGJNd91U1USfLtoftwlhVyyM4BF%2Buwh%2BwqGziuMpAojwFnxKv%2BMVr6C7C2kdhbyg%3D%3D'}}
+  {'type': 'missing', 'loc': ('response', 'samples', 1, 'audio_path'), 'msg': 'Field required', 'input': {'id': '936b543c-b328-4256-aff5-a4294c981640', 'transcript': 'Nakan yi wa marayun murmushi duk lokacin da na gan su.', 'transcript_id': 'hau_AK1_001', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.714, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_001.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_001.wav?Expires=1777224802&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=x%2F1sY6uXY9T8P5lBhODV0MLy7FTwIFOC5IeHIZJ8fBFbWMpyW208ZoxQ5l3CMFOS9RtYzVJX0rXr09LzrB8IFyA1R%2BRjRpV%2BKRnddMeTDF4IqoxSXbLGT0MjEOSDeNKaOu4Xn%2BLOjv3EBQ3ry4vbqU4pV7gixT3XHsZsVCzLBHEYTTRX12Tc36q5sqZW1Xz%2B4kWwHpSrT%2BoVg%2BTWh5VCzCD1u%2BBSX%2B62zPRWU4IJOYnFEZla6vk%2FR0D7f7E5ekyZP%2FpFsdngEQjd5XL9JAqoIWpML%2F%2BPbliBc1dTd1IEP0Fr8cxdxhYExU7UfAID1vYBcwAG%2BVbrCBauYJ37%2FAD2iA%3D%3D'}}
+
+2025-07-30 11:54:05,288 - ERROR -   + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 183, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    |     raise app_exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 328, in app
+    |     content = await serialize_response(
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 177, in serialize_response
+    |     raise ResponseValidationError(
+    | fastapi.exceptions.ResponseValidationError: 2 validation errors:
+    |   {'type': 'missing', 'loc': ('response', 'samples', 0, 'audio_path'), 'msg': 'Field required', 'input': {'id': '79032dfd-12ae-48e1-95d5-02a6c3d4409f', 'transcript': 'Binta tana ba su ruwa tun kafin ma su nema.', 'transcript_id': 'hau_AK1_002', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.474, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_002.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_002.wav?Expires=1777224767&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=CsO%2BIEwQcEv6eWrPOKzAcTvPwX4Es6diRwY2mQc7HqyAj6ztVbNDXhZH6qhObz8f2agWDY6ctBxbMtO1GXAAG0mUmmI6oVDdXS0g3ccmqIJG%2BxCkA60N5VocZQvPufPff%2FmMSABHrotDXKYOYngC1oqjxlikeVA31OKnP7m8GJRIfXbKsX%2Bnlc2EzKw9oMsbcYuTgKfiotfzQoFKCSWysHx%2F4ML4PsN5IaD%2FBP63UMPSTuxBFVdV0khM%2F4yCtaVZG%2BBlE%2FKwqHvztnpunq4Qj5RGJNd91U1USfLtoftwlhVyyM4BF%2Buwh%2BwqGziuMpAojwFnxKv%2BMVr6C7C2kdhbyg%3D%3D'}}
+    |   {'type': 'missing', 'loc': ('response', 'samples', 1, 'audio_path'), 'msg': 'Field required', 'input': {'id': '936b543c-b328-4256-aff5-a4294c981640', 'transcript': 'Nakan yi wa marayun murmushi duk lokacin da na gan su.', 'transcript_id': 'hau_AK1_001', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.714, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_001.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_001.wav?Expires=1777224802&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=x%2F1sY6uXY9T8P5lBhODV0MLy7FTwIFOC5IeHIZJ8fBFbWMpyW208ZoxQ5l3CMFOS9RtYzVJX0rXr09LzrB8IFyA1R%2BRjRpV%2BKRnddMeTDF4IqoxSXbLGT0MjEOSDeNKaOu4Xn%2BLOjv3EBQ3ry4vbqU4pV7gixT3XHsZsVCzLBHEYTTRX12Tc36q5sqZW1Xz%2B4kWwHpSrT%2BoVg%2BTWh5VCzCD1u%2BBSX%2B62zPRWU4IJOYnFEZla6vk%2FR0D7f7E5ekyZP%2FpFsdngEQjd5XL9JAqoIWpML%2F%2BPbliBc1dTd1IEP0Fr8cxdxhYExU7UfAID1vYBcwAG%2BVbrCBauYJ37%2FAD2iA%3D%3D'}}
+    | 
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 328, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 177, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'samples', 0, 'audio_path'), 'msg': 'Field required', 'input': {'id': '79032dfd-12ae-48e1-95d5-02a6c3d4409f', 'transcript': 'Binta tana ba su ruwa tun kafin ma su nema.', 'transcript_id': 'hau_AK1_002', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.474, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_002.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_002.wav?Expires=1777224767&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=CsO%2BIEwQcEv6eWrPOKzAcTvPwX4Es6diRwY2mQc7HqyAj6ztVbNDXhZH6qhObz8f2agWDY6ctBxbMtO1GXAAG0mUmmI6oVDdXS0g3ccmqIJG%2BxCkA60N5VocZQvPufPff%2FmMSABHrotDXKYOYngC1oqjxlikeVA31OKnP7m8GJRIfXbKsX%2Bnlc2EzKw9oMsbcYuTgKfiotfzQoFKCSWysHx%2F4ML4PsN5IaD%2FBP63UMPSTuxBFVdV0khM%2F4yCtaVZG%2BBlE%2FKwqHvztnpunq4Qj5RGJNd91U1USfLtoftwlhVyyM4BF%2Buwh%2BwqGziuMpAojwFnxKv%2BMVr6C7C2kdhbyg%3D%3D'}}
+  {'type': 'missing', 'loc': ('response', 'samples', 1, 'audio_path'), 'msg': 'Field required', 'input': {'id': '936b543c-b328-4256-aff5-a4294c981640', 'transcript': 'Nakan yi wa marayun murmushi duk lokacin da na gan su.', 'transcript_id': 'hau_AK1_001', 'speaker_id': 'HS1M2', 'sample_rate': 80000, 'gender': 'male', 'duration': 4.714, 'category': 'read', 'education': None, 'language': 'hausa', 'domain': 'Finance', 'age': 25, 'snr': 40.0, 'audio_name': 'hau_m_HS1M2_AK1_001.wav', 'storage_link': 'https://storage.googleapis.com/hausanlp-voice/hausa/hau_m_HS1M2_AK1_001.wav?Expires=1777224802&GoogleAccessId=hausanlp-voice-storage%40smart-host-456113-e3.iam.gserviceaccount.com&Signature=x%2F1sY6uXY9T8P5lBhODV0MLy7FTwIFOC5IeHIZJ8fBFbWMpyW208ZoxQ5l3CMFOS9RtYzVJX0rXr09LzrB8IFyA1R%2BRjRpV%2BKRnddMeTDF4IqoxSXbLGT0MjEOSDeNKaOu4Xn%2BLOjv3EBQ3ry4vbqU4pV7gixT3XHsZsVCzLBHEYTTRX12Tc36q5sqZW1Xz%2B4kWwHpSrT%2BoVg%2BTWh5VCzCD1u%2BBSX%2B62zPRWU4IJOYnFEZla6vk%2FR0D7f7E5ekyZP%2FpFsdngEQjd5XL9JAqoIWpML%2F%2BPbliBc1dTd1IEP0Fr8cxdxhYExU7UfAID1vYBcwAG%2BVbrCBauYJ37%2FAD2iA%3D%3D'}}
+
+
+2025-07-30 11:55:58,955 - INFO - 127.0.0.1:53823 - GET /api/v1/download/samples/hausa/preview - Status: [92m200[0m - Time: 1.74s
+2025-07-30 11:56:20,981 - ERROR - Unhandled error for GET /api/v1/download/zip/estimate-size/hausa/50
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 151, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\streams\memory.py", line 126, in receive
+    raise EndOfStream from None
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 49, in estimate_zip_size
+    return await download_service.estimate_zip_size_only(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 97, in estimate_zip_size_only
+    est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: estimate_total_size() takes 1 positional argument but 2 were given
+2025-07-30 11:56:21,028 - ERROR - Unhandled exception at GET /api/v1/download/zip/estimate-size/hausa/50: estimate_total_size() takes 1 positional argument but 2 were given
+2025-07-30 11:56:21,073 - ERROR -   + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 183, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    |     raise app_exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 49, in estimate_zip_size
+    |     return await download_service.estimate_zip_size_only(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 97, in estimate_zip_size_only
+    |     est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | TypeError: estimate_total_size() takes 1 positional argument but 2 were given
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 49, in estimate_zip_size
+    return await download_service.estimate_zip_size_only(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 97, in estimate_zip_size_only
+    est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: estimate_total_size() takes 1 positional argument but 2 were given
+
+2025-07-30 11:56:59,744 - ERROR - Unhandled error for GET /api/v1/download/zip/hausa/50
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 151, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\streams\memory.py", line 126, in receive
+    raise EndOfStream from None
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 69, in download_zip
+    return await download_service.download_zip_with_metadata(language, pct, session, background_tasks, current_user, as_excel=as_excel)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 139, in download_zip_with_metadata
+    zip_stream, zip_filename = stream_zip_with_metadata(
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 133, in stream_zip_with_metadata
+    metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 53, in generate_metadata_buffer
+    "audio_path": f"audio/{s.audio_path}",
+                           ^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\pydantic\main.py", line 991, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'AudioSample' object has no attribute 'audio_path'. Did you mean: 'audio_name'?
+2025-07-30 11:56:59,783 - ERROR - Unhandled exception at GET /api/v1/download/zip/hausa/50: 'AudioSample' object has no attribute 'audio_path'
+2025-07-30 11:56:59,824 - ERROR -   + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 183, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |   File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    |     raise app_exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 69, in download_zip
+    |     return await download_service.download_zip_with_metadata(language, pct, session, background_tasks, current_user, as_excel=as_excel)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 139, in download_zip_with_metadata
+    |     zip_stream, zip_filename = stream_zip_with_metadata(
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 133, in stream_zip_with_metadata
+    |     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 53, in generate_metadata_buffer
+    |     "audio_path": f"audio/{s.audio_path}",
+    |                            ^^^^^^^^^^^^
+    |   File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\pydantic\main.py", line 991, in __getattr__
+    |     raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+    | AttributeError: 'AudioSample' object has no attribute 'audio_path'. Did you mean: 'audio_name'?
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 182, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\Olanrewaju Lawal\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 184, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 105, in log_requests
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\middleware.py", line 102, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 159, in call_next
+    raise app_exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\fastapi\routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\routes.py", line 69, in download_zip
+    return await download_service.download_zip_with_metadata(language, pct, session, background_tasks, current_user, as_excel=as_excel)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\service.py", line 139, in download_zip_with_metadata
+    zip_stream, zip_filename = stream_zip_with_metadata(
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 133, in stream_zip_with_metadata
+    metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\src\download\utils.py", line 53, in generate_metadata_buffer
+    "audio_path": f"audio/{s.audio_path}",
+                           ^^^^^^^^^^^^
+  File "C:\Users\Olanrewaju Lawal\Desktop\Lanre\DSN\African Voices\galaxy backbone\venv\Lib\site-packages\pydantic\main.py", line 991, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'AudioSample' object has no attribute 'audio_path'. Did you mean: 'audio_name'?
+
+2025-07-30 11:58:11,551 - INFO - 127.0.0.1:53882 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 4.06s
+2025-07-30 11:58:16,673 - INFO - 127.0.0.1:53901 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 2.39s
+2025-07-30 12:02:51,054 - INFO - 127.0.0.1:54073 - GET /api/v1/download/samples/hausa/preview - Status: [92m200[0m - Time: 1.03s
+2025-07-30 12:03:18,368 - INFO - 127.0.0.1:54093 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 3.09s
+2025-07-30 12:03:23,044 - INFO - 127.0.0.1:54105 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 2.64s
+2025-07-30 12:15:51,769 - INFO - 127.0.0.1:54574 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 12:15:51,899 - INFO - 127.0.0.1:54574 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.02s
+2025-07-30 12:16:05,057 - INFO - 127.0.0.1:54575 - GET /api/v1/download/samples/hausa/preview - Status: [92m200[0m - Time: 2.25s
+2025-07-30 12:16:27,097 - INFO - 127.0.0.1:54576 - GET /api/v1/download/zip/estimate-size/hausa/50 - Status: [92m200[0m - Time: 2.79s
+2025-07-30 12:17:39,897 - INFO - 127.0.0.1:54610 - GET /favicon.ico - Status: [93m404[0m - Time: 0.00s - Reason: Not Found
