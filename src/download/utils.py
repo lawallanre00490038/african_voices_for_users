@@ -123,7 +123,7 @@ def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='haus
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
 
     for s in samples:
-        audio_filename = f"{zip_folder}/audio/{s.audio_name}"
+        audio_filename = f"{zip_folder}/audio/{s.sentence_id}"
         resp = requests.get(s.storage_link, stream=True)
         if resp.status_code == 200:
             z.write_iter(audio_filename, resp.iter_content(chunk_size=4096))
