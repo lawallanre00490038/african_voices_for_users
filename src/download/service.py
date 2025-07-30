@@ -8,6 +8,25 @@ from .utils import fetch_subset
 from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES, VALID_PERCENTAGES, create_presigned_url
 import requests
 from src.download.utils import stream_zip_with_metadata, estimate_total_size
+import aiohttp
+import asyncio
+
+
+
+
+async def fetch_size(session, url):
+    try:
+        async with session.head(url, timeout=5) as resp:
+            size = int(resp.headers.get("Content-Length", 0))
+            return size
+    except Exception:
+        return 0
+
+async def estimate_sizes_async(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_size(session, url) for url in urls]
+        sizes = await asyncio.gather(*tasks)
+        return sum(sizes)
 
 
 class DownloadService:
@@ -80,10 +99,11 @@ class DownloadService:
         return {"samples": urls}
 
 
+
     async def estimate_zip_size_only(
         self,
         language: str,
-        pct: int,
+        pct: int | float,
         session: AsyncSession
     ) -> dict:
         if language not in SUPPORTED_LANGUAGES:
@@ -93,20 +113,21 @@ class DownloadService:
         if not samples:
             raise HTTPException(404, "No samples available")
 
-        est_size_bytes = estimate_total_size(samples)
+        # est_size_bytes = estimate_total_size(samples)
+        # total_size, total_durations = estimate_total_size(samples)
+        total_size = await estimate_sizes_async([s.storage_link for s in samples])
         return {
-            "estimated_size_bytes": est_size_bytes,
-            "estimated_size_mb": round(est_size_bytes / (1024**2), 2),
-            "sample_count": len(samples),
+            "estimated_size_bytes": total_size,
+            "estimated_size_mb": round(total_size / (1024**2), 2),
+            "sample_count": len(samples)
         }
-
 
 
   
     async def download_zip_with_metadata(
         self, 
         language: str, 
-        pct: int, 
+        pct: int | float, 
         session: AsyncSession, 
         background_tasks: BackgroundTasks, 
         current_user: TokenUser,
@@ -115,8 +136,8 @@ class DownloadService:
         
         if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}")
-        if pct not in VALID_PERCENTAGES:
-            raise HTTPException(400, f"Invalid percentage: {pct}")
+        # if pct not in VALID_PERCENTAGES:
+        #     raise HTTPException(400, f"Invalid percentage: {pct}")
 
         samples = await fetch_subset(session, language, pct)
         if not samples:
@@ -133,7 +154,7 @@ class DownloadService:
         await session.commit() 
 
         # Stream ZIP
-        zip_stream, zip_filename = stream_zip_with_metadata(
+        zip_stream, zip_filename = await stream_zip_with_metadata(
             samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
         )
 
