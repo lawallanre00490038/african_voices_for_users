@@ -27,7 +27,9 @@ class DownloadService:
         domain: str | None = None,
     ):
         if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}")
+            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija' and 'Yoruba' are supported")
+        if category == Categroy.spontaneous:
+            raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
 
         filters = [AudioSample.language == language]
 
@@ -86,8 +88,6 @@ class DownloadService:
     ) -> dict:
         if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}. Only Naija and Yoruba")
-        # if pct not in VALID_PERCENTAGES:
-        #     raise HTTPException(400, f"Invalid percentage: {pct}")
 
         samples = await fetch_subset(session, language, pct)
         if not samples:
@@ -131,10 +131,6 @@ class DownloadService:
             ),
         )
         await session.commit() 
-
-        # Optional: Estimate ZIP size (e.g., for showing on frontend)
-        # est_size_bytes = estimate_total_size(samples, self.s3_bucket_name)
-        # print(f"Estimated ZIP size: {round(est_size_bytes / (1024**2), 2)} MB")
 
         # Stream ZIP
         zip_stream, zip_filename = stream_zip_with_metadata(

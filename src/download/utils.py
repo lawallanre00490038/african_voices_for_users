@@ -62,31 +62,19 @@ async def fetch_subset(session: AsyncSession, language: str, pct: int):
 
 
 
-import requests
-
 def estimate_total_size(samples: list) -> int:
-    """Estimate total size of publicly accessible audio files via HTTP HEAD."""
-    total_size = 0
+    """
+    Estimate total size of audio files in bytes from their public storage_link URLs.
+    """
+    total = 0
     for s in samples:
         try:
-            url = s.storage_link
-            if not url or not url.startswith("http"):
-                print(f"Invalid or missing URL: {url}")
-                continue
-
-            # Use HEAD request to avoid downloading the file
-            response = requests.head(url, timeout=5)
-
-            if response.status_code == 200 and "Content-Length" in response.headers:
-                file_size = int(response.headers["Content-Length"])
-                total_size += file_size
-            else:
-                print(f"Could not get size for {url} - Status: {response.status_code}")
+            response = requests.head(s.storage_link, allow_redirects=True, timeout=5)
+            response.raise_for_status()
+            total += int(response.headers.get("Content-Length", 0))
         except Exception as e:
-            print(f"Error processing {s.storage_link}: {e}")
-    return total_size
-
-
+            print(f"Failed to fetch size for {s.storage_link}: {e}")
+    return total
 
 
 
