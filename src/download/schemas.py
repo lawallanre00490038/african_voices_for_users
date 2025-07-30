@@ -19,26 +19,6 @@ class AudioSamplePreview(BaseModel):
     category: str
 
 
-# class AudioSamplePreview(BaseModel):
-#     id: str
-#     transcript: str
-#     transcript_id: str
-#     speaker_id: str
-#     sample_rate: int
-#     gender: str
-#     category: str
-#     duration: float
-#     language: str
-#     education: Optional[str] = None
-
-#     storage_link: Optional[str] = None
-#     audio_name: Optional[str] = None
-
-#     domain: str
-#     age: int
-#     snr: float
-
-
 class AudioPreviewResponse(BaseModel):
     samples: List[AudioSamplePreview]
 
@@ -48,3 +28,4 @@ class EstimatedSizeResponse(BaseModel):
     estimated_size_bytes: int
     estimated_size_mb: float
     sample_count: int
+    # total_durations: Optional[str] = None

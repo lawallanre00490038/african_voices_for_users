@@ -28,7 +28,6 @@ async def preview_audio_samples(
     domain: str | None = Query(None),
     category: Categroy | None = Query(Categroy.read, alias="category"),
     session: AsyncSession = Depends(get_session),
-    _current: TokenUser = Depends(get_current_user),
 ):
     
     """
@@ -50,8 +49,7 @@ async def preview_audio_samples(
 @download_router.get("/zip/estimate-size/{language}/{pct}", response_model=EstimatedSizeResponse)
 async def estimate_zip_size(
     language: str,
-    pct: int,
-    current_user: TokenUser = Depends(get_current_user),
+    pct: int | float,
     session: AsyncSession = Depends(get_session),
 ):
     return await download_service.estimate_zip_size_only(
@@ -65,7 +63,7 @@ async def estimate_zip_size(
 @download_router.get("/zip/{language}/{pct}", response_class=StreamingResponse)
 async def download_zip(
     language: str,
-    pct: int,
+    pct: int | float,
     background_tasks: BackgroundTasks,
     as_excel: bool = True,
     current_user: TokenUser = Depends(get_current_user),
