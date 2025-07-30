@@ -158,11 +158,10 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     #         z.write_iter(audio_filename, resp.iter_content(chunk_size=4096))
 
     audio_contents = await fetch_all(samples)
-
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
     for sentence_id, audio_data in audio_contents:
         if audio_data:
-            z.write_iter(f"{zip_folder}/audio/{sentence_id}", [audio_data])
+            z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
 
     # 2. Add metadata (Excel or CSV)
     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
