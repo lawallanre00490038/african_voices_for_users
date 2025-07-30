@@ -201,3 +201,4 @@ botocore.exceptions.ReadTimeoutError: Read timeout on endpoint URL: "None"
 2025-07-29 13:26:40,978 - INFO - 127.0.0.1:64183 - GET /api/v1/download/zip/estimate-size/hausa/50 - Status: [92m200[0m - Time: 5.87s
 2025-07-29 13:29:15,974 - INFO - 127.0.0.1:64270 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 6.09s
 2025-07-29 13:29:23,036 - INFO - 127.0.0.1:64277 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 5.11s
+2025-07-29 13:51:53,272 - INFO - 127.0.0.1:64986 - GET /api/v1/download/zip/hausa/50 - Status: [92m200[0m - Time: 7.27s
