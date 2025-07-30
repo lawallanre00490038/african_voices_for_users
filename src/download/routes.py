@@ -35,7 +35,14 @@ async def preview_audio_samples(
      Get a list of audio samples for preview.
     """
     return await download_service.preview_audio_samples(
-        session=session, language=language, limit=limit, gender=gender, age_group=age, education=education, domain=domain, category=category
+        session=session, 
+        language=language, 
+        limit=limit, 
+        gender=gender, 
+        age_group=age, 
+        education=education, 
+        domain=domain, 
+        category=category
     )
 
 

@@ -2856,3 +2856,10 @@ Traceback (most recent call last):
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 TypeError: DownloadService.preview_audio_samples() got an unexpected keyword argument 'age'
 
+2025-07-30 18:34:11,908 - INFO - 127.0.0.1:57901 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:34:12,374 - INFO - 127.0.0.1:57901 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.03s
+2025-07-30 18:34:24,756 - INFO - 127.0.0.1:57902 - GET /api/v1/download/samples/Naija/preview - Status: [92m200[0m - Time: 2.07s
+2025-07-30 18:34:46,348 - ERROR - HTTPException: Unavailable category: Categroy.spontaneous. Only 'Read' and 'Read_as_Spontanueos' are available at GET /api/v1/download/samples/Naija/preview
+2025-07-30 18:34:46,349 - INFO - 127.0.0.1:57903 - GET /api/v1/download/samples/Naija/preview - Status: [93m400[0m - Time: 0.00s - Reason: Unavailable category: Categroy.spontaneous. Only 'Read' and 'Read_as_Spontanueos' are available
+2025-07-30 18:38:44,065 - INFO - 127.0.0.1:58255 - GET /api/v1/docs - Status: [92m200[0m - Time: 0.00s
+2025-07-30 18:38:44,526 - INFO - 127.0.0.1:58255 - GET /api/v1/openapi.json - Status: [92m200[0m - Time: 0.06s
