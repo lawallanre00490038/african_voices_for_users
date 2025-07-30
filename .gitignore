@@ -13,3 +13,6 @@ account.json
 push_to_db_local_sheets.py
 
 data/
+
+
+src/**/*.pyc
