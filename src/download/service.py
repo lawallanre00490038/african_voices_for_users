@@ -1,13 +1,14 @@
 from fastapi import HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from sqlmodel import select, and_
-from src.db.models import AudioSample, DownloadLog, Categroy
+from src.db.models import AudioSample, DownloadLog, Categroy, GenderEnum
 from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
 from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES, VALID_PERCENTAGES, create_presigned_url
 from src.download.utils import stream_zip_with_metadata, estimate_total_size
 import aiohttp
+from typing import List, Optional
 import asyncio
 
 
@@ -44,36 +45,16 @@ class DownloadService:
         education: str | None = None,
         domain: str | None = None,
     ):
-        if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija' and 'Yoruba' are supported")
-        if category == Categroy.spontaneous:
-            raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
-
-        filters = [AudioSample.language == language]
-
-        if gender:
-            filters.append(AudioSample.gender == gender)
-        if category:
-            filters.append(AudioSample.category == category)
-        if age_group:
-            filters.append(AudioSample.age_group == age_group)
-        if education:
-            filters.append(AudioSample.edu_level == education)
-        if domain:
-            filters.append(AudioSample.domain == domain)
-
-        stmt = (
-            select(AudioSample)
-            .where(and_(*filters))
-            .order_by(AudioSample.id)
-            .limit(limit)
+        samples, _ = await self.filter_core(
+            session=session,
+            language=language,
+            limit=limit,
+            category=category,
+            gender=gender,
+            age_group=age_group,
+            education=education,
+            domain=domain,
         )
-
-        result = await session.execute(stmt)
-        samples = result.scalars().all()
-
-        if not samples:
-            raise HTTPException(404, "No audio samples found")
 
         urls = [
             {
@@ -98,19 +79,86 @@ class DownloadService:
         return {"samples": urls}
 
 
+    async def filter_core(
+        self,
+        session: AsyncSession,
+        language: str,
+        limit: Optional[int] = None,
+        category: str = Categroy.read,
+        gender: str | None = None,
+        age_group: str | None = None,
+        education: str | None = None,
+        domain: str | None = None,
+            
+    ):
+        
+        if language not in SUPPORTED_LANGUAGES:
+            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija' and 'Yoruba' are supported")
+        if category == Categroy.spontaneous:
+            raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
+
+        filters = [AudioSample.language == language]
+
+        if gender:
+            filters.append(AudioSample.gender == gender)
+        if category:
+            filters.append(AudioSample.category == category)
+        if age_group:
+            filters.append(AudioSample.age_group == age_group)
+        if education:
+            filters.append(AudioSample.edu_level == education)
+        if domain:
+            filters.append(AudioSample.domain == domain)
+
+        if limit:
+            stmt = (
+                select(AudioSample)
+                .where(and_(*filters))
+                .order_by(AudioSample.id)
+                .limit(limit)
+            )
+        else:
+            stmt = (
+                select(AudioSample)
+                .where(and_(*filters))
+                .order_by(AudioSample.id)
+            )
+
+        result = await session.execute(stmt)
+        samples = result.scalars().all()
+
+        if not samples:
+            raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
+        
+        total = len(samples)
+        
+        return samples, total
+    
 
     async def estimate_zip_size_only(
         self,
         language: str,
         pct: int | float,
-        session: AsyncSession
-    ) -> dict:
-        if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}. Only Naija and Yoruba")
+        session: AsyncSession,
 
-        samples = await fetch_subset(session, language, pct)
-        if not samples:
-            raise HTTPException(404, "No samples available")
+        category: str = Categroy.read,
+        gender: GenderEnum | None = None,
+        age_group: str | None = None,
+        education: str | None = None,
+        domain: str | None = None,
+
+    ) -> dict:
+
+        samples = await fetch_subset(
+            session=session, 
+            language=language,
+            category=category,
+            gender=gender,
+            age_group=age_group,
+            education=education,
+            domain=domain,
+            pct=pct
+        )
 
         # est_size_bytes = estimate_total_size(samples)
         # total_size, total_durations = estimate_total_size(samples)
@@ -127,21 +175,34 @@ class DownloadService:
         self, 
         language: str, 
         pct: int | float, 
+
         session: AsyncSession, 
         background_tasks: BackgroundTasks, 
         current_user: TokenUser,
+
+        category: str = Categroy.read,
+        gender: GenderEnum | None = None,
+        age_group: str | None = None,
+        education: str | None = None,
+        domain: str | None = None,
+
+        
         as_excel: bool = True
     ):
-        
-        if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}")
-        # if pct not in VALID_PERCENTAGES:
-        #     raise HTTPException(400, f"Invalid percentage: {pct}")
 
-        samples = await fetch_subset(session, language, pct)
+        samples = await fetch_subset(
+            session=session, 
+            language=language,
+            category=category,
+            gender=gender,
+            age_group=age_group,
+            education=education,
+            domain=domain,
+            pct=pct
+        )
+
         if not samples:
-            raise HTTPException(404, "No samples available")
-
+            raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
         background_tasks.add_task(
             session.add,
             DownloadLog(
