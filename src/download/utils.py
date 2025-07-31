@@ -83,7 +83,7 @@ async def fetch_subset(
     ):
     # Count total number of samples
     if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija' and 'Yoruba' are supported")
+            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
     if category == Categroy.spontaneous:
         raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
 
