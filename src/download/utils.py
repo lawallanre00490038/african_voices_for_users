@@ -150,7 +150,7 @@ def generate_metadata_buffer(samples, as_excel=True):
         "speaker_id": s.annotator_id,
         "transcript_id": s.sentence_id,
         "transcript": s.sentence,
-        "audio_path": f"audio/{s.sentence_id}",
+        "audio_path": f"audio/{s.sentence_id}.wav",
         "gender": s.gender,
         "age_group": s.age_group,
         "edu_level": s.edu_level,
