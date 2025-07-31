@@ -12,7 +12,7 @@ import requests
 from io import BytesIO
 from math import floor
 import aiohttp
-import asyncio
+import asyncio, os
 from fastapi import HTTPException
 from src.db.models import AudioSample, Categroy
 from src.download.s3_config import  SUPPORTED_LANGUAGES
@@ -21,16 +21,51 @@ from sqlmodel import select, and_
 
 
 # =========================================================================
-async def fetch_audio(session, sample):
-    async with session.get(sample.storage_link) as resp:
-        if resp.status == 200:
-            return sample.sentence_id, await resp.read()
-        return sample.sentence_id, None
+# async def fetch_audio(session, sample):
+#     async with session.get(sample.storage_link) as resp:
+#         if resp.status == 200:
+#             return sample.sentence_id, await resp.read()
+#         return sample.sentence_id, None
 
+# async def fetch_all(samples):
+#     async with aiohttp.ClientSession() as session:
+#         tasks = [fetch_audio(session, s) for s in samples]
+#         return await asyncio.gather(*tasks)
+    
+
+semaphore = asyncio.Semaphore(5)
+
+async def fetch_audio_stream(session, sample, retries=1):
+    print(f"Fetching {sample.sentence_id}")
+    for attempt in range(retries):
+        try:
+            async with session.get(sample.storage_link, timeout=5) as resp:
+                if resp.status == 200:
+                    audio_data = bytearray()
+                    async for chunk in resp.content.iter_chunked(1024):
+                        audio_data.extend(chunk)
+                    print(f"Fetched {sample.sentence_id}")
+                    return sample.sentence_id, bytes(audio_data)
+                else:
+                    print(f"Non-200 status for {sample.sentence_id}: {resp.status}")
+        except Exception as e:
+            print(f"[Attempt {attempt+1}] Error streaming {sample.sentence_id}: {e}")
+            await asyncio.sleep(1)
+    print(f"Failed to fetch {sample.sentence_id} after {retries} attempts")
+    return sample.sentence_id, None
+
+
+async def fetch_audio_limited(session, sample):
+    async with semaphore:
+        return await fetch_audio_stream(session, sample)
+    
 async def fetch_all(samples):
-    async with aiohttp.ClientSession() as session:
-        tasks = [fetch_audio(session, s) for s in samples]
+    connector = aiohttp.TCPConnector(limit=10)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        tasks = [fetch_audio_limited(session, s) for s in samples]
+        print(f"Downloading {len(samples)} samples")
         return await asyncio.gather(*tasks)
+
 # =========================================================================
 
 
@@ -115,7 +150,6 @@ def generate_metadata_buffer(samples, as_excel=True):
         "speaker_id": s.annotator_id,
         "transcript_id": s.sentence_id,
         "transcript": s.sentence,
-        "storage_link": s.storage_link,
         "audio_path": f"audio/{s.sentence_id}",
         "gender": s.gender,
         "age_group": s.age_group,
@@ -174,6 +208,51 @@ def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int) -
 
 
 
+# async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
+#     import zipstream
+#     import datetime
+
+#     today = datetime.datetime.now().strftime("%Y-%m-%d")
+#     zip_folder = f"{language}_{pct}pct_{today}"
+#     zip_name = f"{zip_folder}_dataset.zip"
+
+#     # z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
+    
+#     # for s in samples:
+#     #     audio_filename = f"{zip_folder}/audio/{s.sentence_id}"
+#     #     resp = requests.get(s.storage_link, stream=True)
+#     #     if resp.status_code == 200:
+#     #         z.write_iter(audio_filename, resp.iter_content(chunk_size=4096))
+
+#     audio_contents = await fetch_all(samples)
+#     valid_results = [(sid, data) for sid, data in audio_contents if data is not None]
+#     print(f"Successfully fetched {len(valid_results)} out of {len(samples)}")
+
+
+#     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
+
+#     # for sentence_id, audio_data in valid_results:
+#     #     z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
+#     # OR
+    
+#     for sentence_id, audio_data in audio_contents:
+#         if audio_data is not None:
+#             print("This is the audio data", audio_data)
+#             z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
+    
+
+#     # 2. Add metadata (Excel or CSV)
+#     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+#     metadata_buf.seek(0)
+#     z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
+
+#     # 3. Add README
+#     readme_text = generate_readme(language, pct, as_excel, len(samples))
+#     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
+
+#     return z, zip_name
+
+
 async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
     import zipstream
     import datetime
@@ -182,28 +261,23 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     zip_folder = f"{language}_{pct}pct_{today}"
     zip_name = f"{zip_folder}_dataset.zip"
 
-    z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
-    
-    # for s in samples:
-    #     audio_filename = f"{zip_folder}/audio/{s.sentence_id}"
-    #     resp = requests.get(s.storage_link, stream=True)
-    #     if resp.status_code == 200:
-    #         z.write_iter(audio_filename, resp.iter_content(chunk_size=4096))
-
     audio_contents = await fetch_all(samples)
-    z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
-    for sentence_id, audio_data in audio_contents:
-        if audio_data:
-            print("This is the audio data", audio_data)
-            z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
+    valid_results = [(sid, data) for sid, data in audio_contents if data is not None]
+    print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
 
-    # 2. Add metadata (Excel or CSV)
-    metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+    valid_ids = {sid for sid, _ in valid_results}
+    filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
+
+    z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
+
+    for sentence_id, audio_data in valid_results:
+        z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
+
+    metadata_buf, metadata_filename = generate_metadata_buffer(filtered_samples, as_excel=as_excel)
     metadata_buf.seek(0)
     z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
 
-    # 3. Add README
-    readme_text = generate_readme(language, pct, as_excel, len(samples))
+    readme_text = generate_readme(language, pct, as_excel, len(filtered_samples))
     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
     return z, zip_name
