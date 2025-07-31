@@ -18,6 +18,10 @@ class Categroy(str, Enum):
     spontaneous = "spontaneous"
     read_as_spontaneous = "read_as_spontaneous"
 
+class GenderEnum(str, Enum):
+    male = "male"
+    female = "female"
+
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
