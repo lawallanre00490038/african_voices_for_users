@@ -102,7 +102,10 @@ class UserService:
         return user
 
     async def authenticate_user(
-        self, email: str, password: str, session: AsyncSession
+        self, 
+        email: str, 
+        password: Optional[str], 
+        session: AsyncSession
     ) -> User:
         """Authenticate a user by email and password."""
         user = await self.get_user_by_email(email, session)

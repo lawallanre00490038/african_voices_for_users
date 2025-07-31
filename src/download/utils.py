@@ -35,23 +35,23 @@ from sqlmodel import select, and_
 
 semaphore = asyncio.Semaphore(5)
 
-async def fetch_audio_stream(session, sample, retries=1):
+async def fetch_audio_stream(session, sample, retries=3):
     print(f"Fetching {sample.sentence_id}")
-    for attempt in range(retries):
+    for attempt in range(1, retries + 1):
         try:
-            async with session.get(sample.storage_link, timeout=5) as resp:
+            async with session.get(sample.storage_link, timeout=10) as resp:
                 if resp.status == 200:
                     audio_data = bytearray()
                     async for chunk in resp.content.iter_chunked(1024):
                         audio_data.extend(chunk)
-                    print(f"Fetched {sample.sentence_id}")
+                    print(f"✅ Fetched {sample.sentence_id}")
                     return sample.sentence_id, bytes(audio_data)
                 else:
-                    print(f"Non-200 status for {sample.sentence_id}: {resp.status}")
+                    print(f"❌ Non-200 status for {sample.sentence_id}: {resp.status}")
         except Exception as e:
-            print(f"[Attempt {attempt+1}] Error streaming {sample.sentence_id}: {e}")
-            await asyncio.sleep(1)
-    print(f"Failed to fetch {sample.sentence_id} after {retries} attempts")
+            print(f"[Attempt {attempt}] Error streaming {sample.sentence_id}: {e}")
+            await asyncio.sleep(2 ** attempt)  # exponential backoff
+    print(f"❌ Failed to fetch {sample.sentence_id} after {retries} attempts")
     return sample.sentence_id, None
 
 
