@@ -13,6 +13,10 @@ from io import BytesIO
 from math import floor
 import aiohttp
 import asyncio
+from fastapi import HTTPException
+from src.db.models import AudioSample, Categroy
+from src.download.s3_config import  SUPPORTED_LANGUAGES
+from sqlmodel import select, and_
 
 
 
@@ -30,11 +34,38 @@ async def fetch_all(samples):
 # =========================================================================
 
 
+async def fetch_subset(
+    session: AsyncSession, 
+    language: str, 
+    pct: int | float,
 
-
-async def fetch_subset(session: AsyncSession, language: str, pct: int | float):
+    category: str | None = Categroy.read,
+    gender: str | None = None,
+    age_group: str | None = None,
+    education: str | None = None,
+    domain: str | None = None,
+        
+    ):
     # Count total number of samples
-    total_stmt = select(func.count()).select_from(AudioSample).where(AudioSample.language == language)
+    if language not in SUPPORTED_LANGUAGES:
+            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija' and 'Yoruba' are supported")
+    if category == Categroy.spontaneous:
+        raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
+
+    filters = [AudioSample.language == language]
+
+    if gender:
+        filters.append(AudioSample.gender == gender)
+    if category:
+        filters.append(AudioSample.category == category)
+    if age_group:
+        filters.append(AudioSample.age_group == age_group)
+    if education:
+        filters.append(AudioSample.edu_level == education)
+    if domain:
+        filters.append(AudioSample.domain == domain)
+
+    total_stmt = select(func.count()).select_from(AudioSample).where(and_(*filters))
     total_result = await session.execute(total_stmt)
     total = total_result.scalar_one()
 
@@ -45,15 +76,17 @@ async def fetch_subset(session: AsyncSession, language: str, pct: int | float):
 
     count = max(1, int(floor(total * pct / 100)))
 
-    # Now fetch only the required number of samples
     stmt = (
         select(AudioSample)
-        .where(AudioSample.language == language)
+        .where(and_(*filters))
         .order_by(AudioSample.id)
         .limit(count)
     )
     result = await session.execute(stmt)
     response = result.scalars().all()
+
+    if not response:
+        raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
     print(response)
     return response
 
@@ -161,6 +194,7 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
     for sentence_id, audio_data in audio_contents:
         if audio_data:
+            print("This is the audio data", audio_data)
             z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
 
     # 2. Add metadata (Excel or CSV)
