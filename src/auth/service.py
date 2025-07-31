@@ -99,6 +99,10 @@ class UserService:
             raise UserNotFound(
                 message="The user with this token does not exist"
             )
+        if not user.is_verified:
+            raise EmailNotVerified(
+                message="The email is not verified. Please verify your email first."
+            )
         return user
 
     async def authenticate_user(
@@ -236,7 +240,7 @@ class UserService:
                 user.verification_token = verification_token
                 session.add(user)
                 await session.commit()
-                send_verification_email(user.email, verification_token)
+                send_verification_email(user.email, user.full_name, verification_token)
 
             return VerificationMailSchemaResponse(
                 status=True,
