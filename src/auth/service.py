@@ -99,10 +99,6 @@ class UserService:
             raise UserNotFound(
                 message="The user with this token does not exist"
             )
-        if not user.is_verified:
-            raise EmailNotVerified(
-                message="The email is not verified. Please verify your email first."
-            )
         return user
 
     async def authenticate_user(
