@@ -5,11 +5,9 @@ from src.db.models import AudioSample, DownloadLog, Categroy, GenderEnum
 from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
-from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES, VALID_PERCENTAGES, create_presigned_url
-from src.download.utils import stream_zip_with_metadata, estimate_total_size
-import aiohttp
+from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES
+from src.download.utils import stream_zip_with_metadata, estimate_total_size, stream_zip_with_metadata_links
 from typing import List, Optional
-import asyncio
 
 
 
@@ -198,9 +196,14 @@ class DownloadService:
         await session.commit() 
 
         # Stream ZIP
-        zip_stream, zip_filename = await stream_zip_with_metadata(
-            samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
-        )
+        if language.lower() == "hausa":
+            zip_stream, zip_filename = await stream_zip_with_metadata_links(
+                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
+            )
+        else:
+            zip_stream, zip_filename = await stream_zip_with_metadata(
+                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
+            )
 
         return StreamingResponse(
             zip_stream,
