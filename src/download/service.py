@@ -196,18 +196,18 @@ class DownloadService:
         await session.commit() 
 
         # Stream ZIP
-        # if language.lower() == "hausa":
-        #     zip_stream, zip_filename = await stream_zip_with_metadata_links(
-        #         samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
-        #     )
-        # else:
-        #     zip_stream, zip_filename = await stream_zip_with_metadata(
-        #         samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
-        #     )
-
-        zip_stream, zip_filename = await stream_zip_with_metadata_links(
-                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
+        if language.lower() == "hausa":
+            zip_stream, zip_filename = await stream_zip_with_metadata_links(
+                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
             )
+        else:
+            zip_stream, zip_filename = await stream_zip_with_metadata(
+                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
+            )
+
+        # zip_stream, zip_filename = await stream_zip_with_metadata_links(
+        #         samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
+        #     )
 
         return StreamingResponse(
             zip_stream,
