@@ -88,33 +88,6 @@ async def preview_audio_samples(
     )
 
 
-
-# @download_router.get("/zip/estimate-size/{language}/{pct}", response_model=EstimatedSizeResponse)
-# async def estimate_zip_size(
-#     language: str,
-#     pct: int | float,
-
-#     gender: GenderEnum | None = Query(GenderEnum.male, alias="gender"),
-#     age: str | None = Query(None),
-#     education: str | None = Query(None),
-#     domain: str | None = Query(None),
-#     category: Categroy | None = Query(Categroy.read, alias="category"),
-
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     return await download_service.estimate_zip_size_only(
-#         language=language,
-#         pct=pct,
-#         session=session,
-
-#         gender=gender,
-#         age_group=age,
-#         education=education,
-#         domain=domain,
-#         category=category
-        
-#     )
-
 @download_router.get("/zip/estimate-size/{language}/{pct}", response_model=EstimatedSizeResponse)
 async def estimate_zip_size(
     language: str,
@@ -125,6 +98,7 @@ async def estimate_zip_size(
     domain: str | None = Query(None),
     category: str | None = Query(),
     session: AsyncSession = Depends(get_session),
+    # category: Categroy | None = Query(Categroy.read, alias="category"),
 ):
 
     gender = map_all_to_none(gender)
@@ -147,42 +121,6 @@ async def estimate_zip_size(
         domain=domain,
         
     )
-
-
-
-# @download_router.get("/zip/{language}/{pct}", response_class=StreamingResponse)
-# async def download_zip(
-#     language: str,
-#     pct: int | float,
-#     background_tasks: BackgroundTasks,
-
-#     gender: GenderEnum | None = Query(GenderEnum.male, alias="gender"),
-#     age: str | None = Query(None),
-#     education: str | None = Query(None),
-#     domain: str | None = Query(None),
-#     category: Categroy | None = Query(Categroy.read, alias="category"),
-
-#     as_excel: bool = True,
-#     current_user: TokenUser = Depends(get_current_user),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     """
-#     Download a zip file of audio datasets for a given language and percentage.
-#     """
-#     return await download_service.download_zip_with_metadata(
-#         language=language, 
-#         pct=pct, 
-#         session=session, 
-#         background_tasks=background_tasks, 
-#         current_user=current_user, 
-#         as_excel=as_excel,
-
-#         gender=gender, 
-#         age_group=age, 
-#         education=education, 
-#         domain=domain, 
-#         category=category
-#     )
 
 
 @download_router.get("/zip/{language}/{pct}", response_class=StreamingResponse)
