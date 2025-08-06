@@ -249,15 +249,17 @@ async def stream_zip_with_metadata_links(samples, bucket: str, as_excel=True, la
     filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
 
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
-
+    
+    sentence_id_new = None
     for sentence_id, audio_data in valid_results:
         z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
+        sentence_id_new=sentence_id
 
     metadata_buf, metadata_filename = generate_metadata_buffer(filtered_samples, as_excel=as_excel)
     metadata_buf.seek(0)
     z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
 
-    readme_text = generate_readme(language, pct, as_excel, len(filtered_samples))
+    readme_text = generate_readme(language, pct, as_excel, len(filtered_samples), sentence_id_new)
     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
     return z, zip_name
