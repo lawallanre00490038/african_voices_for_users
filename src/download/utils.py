@@ -37,38 +37,38 @@ from sqlmodel import select, and_
 
 
 # ================================================================================
-# semaphore = asyncio.Semaphore(5)
+semaphore = asyncio.Semaphore(5)
 
-# async def fetch_audio_stream(session, sample, retries=3):
-#     print(f"Fetching {sample.sentence_id}")
-#     for attempt in range(1, retries + 1):
-#         try:
-#             async with session.get(sample.storage_link, timeout=10) as resp:
-#                 if resp.status == 200:
-#                     audio_data = bytearray()
-#                     async for chunk in resp.content.iter_chunked(1024):
-#                         audio_data.extend(chunk)
-#                     print(f"✅ Fetched {sample.sentence_id}")
-#                     return sample.sentence_id, bytes(audio_data)
-#                 else:
-#                     print(f"❌ Non-200 status for {sample.sentence_id}: {resp.status}")
-#         except Exception as e:
-#             print(f"[Attempt {attempt}] Error streaming {sample.sentence_id}: {e}")
-#             await asyncio.sleep(2 ** attempt)  # exponential backoff
-#     print(f"❌ Failed to fetch {sample.sentence_id} after {retries} attempts")
-#     return sample.sentence_id, None
+async def fetch_audio_stream(session, sample, retries=3):
+    print(f"Fetching {sample.sentence_id}")
+    for attempt in range(1, retries + 1):
+        try:
+            async with session.get(sample.storage_link, timeout=10) as resp:
+                if resp.status == 200:
+                    audio_data = bytearray()
+                    async for chunk in resp.content.iter_chunked(1024):
+                        audio_data.extend(chunk)
+                    print(f"✅ Fetched {sample.sentence_id}")
+                    return sample.sentence_id, bytes(audio_data)
+                else:
+                    print(f"❌ Non-200 status for {sample.sentence_id}: {resp.status}")
+        except Exception as e:
+            print(f"[Attempt {attempt}] Error streaming {sample.sentence_id}: {e}")
+            await asyncio.sleep(2 ** attempt)  # exponential backoff
+    print(f"❌ Failed to fetch {sample.sentence_id} after {retries} attempts")
+    return sample.sentence_id, None
 
 
-# async def fetch_audio_limited(session, sample):
-#     async with semaphore:
-#         return await fetch_audio_stream(session, sample)
+async def fetch_audio_limited(session, sample):
+    async with semaphore:
+        return await fetch_audio_stream(session, sample)
     
-# async def fetch_all(samples):
-#     connector = aiohttp.TCPConnector(limit=10)
-#     async with aiohttp.ClientSession(connector=connector) as session:
-#         tasks = [fetch_audio_limited(session, s) for s in samples]
-#         print(f"Downloading {len(samples)} samples")
-#         return await asyncio.gather(*tasks)
+async def fetch_all(samples):
+    connector = aiohttp.TCPConnector(limit=10)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        tasks = [fetch_audio_limited(session, s) for s in samples]
+        print(f"Downloading {len(samples)} samples")
+        return await asyncio.gather(*tasks)
 
 # =========================================================================
 
@@ -233,34 +233,34 @@ def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int, s
 
 
 
-# async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
-#     import zipstream
-#     import datetime
+async def stream_zip_with_metadata_links(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
+    import zipstream
+    import datetime
 
-#     today = datetime.datetime.now().strftime("%Y-%m-%d")
-#     zip_folder = f"{language}_{pct}pct_{today}"
-#     zip_name = f"{zip_folder}_dataset.zip"
+    today = datetime.datetime.now().strftime("%Y-%m-%d")
+    zip_folder = f"{language}_{pct}pct_{today}"
+    zip_name = f"{zip_folder}_dataset.zip"
 
-#     audio_contents = await fetch_all(samples)
-#     valid_results = [(sid, data) for sid, data in audio_contents if data is not None]
-#     print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
+    audio_contents = await fetch_all(samples)
+    valid_results = [(sid, data) for sid, data in audio_contents if data is not None]
+    print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
 
-#     valid_ids = {sid for sid, _ in valid_results}
-#     filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
+    valid_ids = {sid for sid, _ in valid_results}
+    filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
 
-#     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
+    z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
 
-#     for sentence_id, audio_data in valid_results:
-#         z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
+    for sentence_id, audio_data in valid_results:
+        z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
 
-#     metadata_buf, metadata_filename = generate_metadata_buffer(filtered_samples, as_excel=as_excel)
-#     metadata_buf.seek(0)
-#     z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
+    metadata_buf, metadata_filename = generate_metadata_buffer(filtered_samples, as_excel=as_excel)
+    metadata_buf.seek(0)
+    z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
 
-#     readme_text = generate_readme(language, pct, as_excel, len(filtered_samples))
-#     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
+    readme_text = generate_readme(language, pct, as_excel, len(filtered_samples))
+    z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
-#     return z, zip_name
+    return z, zip_name
 
 
 async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
