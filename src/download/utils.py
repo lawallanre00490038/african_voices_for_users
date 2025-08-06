@@ -13,6 +13,8 @@ from io import BytesIO
 from math import floor
 import aiohttp
 import asyncio, os
+from enum import Enum
+import botocore.exceptions
 from fastapi import HTTPException
 from src.db.models import AudioSample, Categroy
 from src.download.s3_config import  SUPPORTED_LANGUAGES
@@ -33,38 +35,40 @@ from sqlmodel import select, and_
 #         return await asyncio.gather(*tasks)
     
 
-semaphore = asyncio.Semaphore(5)
 
-async def fetch_audio_stream(session, sample, retries=3):
-    print(f"Fetching {sample.sentence_id}")
-    for attempt in range(1, retries + 1):
-        try:
-            async with session.get(sample.storage_link, timeout=10) as resp:
-                if resp.status == 200:
-                    audio_data = bytearray()
-                    async for chunk in resp.content.iter_chunked(1024):
-                        audio_data.extend(chunk)
-                    print(f"✅ Fetched {sample.sentence_id}")
-                    return sample.sentence_id, bytes(audio_data)
-                else:
-                    print(f"❌ Non-200 status for {sample.sentence_id}: {resp.status}")
-        except Exception as e:
-            print(f"[Attempt {attempt}] Error streaming {sample.sentence_id}: {e}")
-            await asyncio.sleep(2 ** attempt)  # exponential backoff
-    print(f"❌ Failed to fetch {sample.sentence_id} after {retries} attempts")
-    return sample.sentence_id, None
+# ================================================================================
+# semaphore = asyncio.Semaphore(5)
+
+# async def fetch_audio_stream(session, sample, retries=3):
+#     print(f"Fetching {sample.sentence_id}")
+#     for attempt in range(1, retries + 1):
+#         try:
+#             async with session.get(sample.storage_link, timeout=10) as resp:
+#                 if resp.status == 200:
+#                     audio_data = bytearray()
+#                     async for chunk in resp.content.iter_chunked(1024):
+#                         audio_data.extend(chunk)
+#                     print(f"✅ Fetched {sample.sentence_id}")
+#                     return sample.sentence_id, bytes(audio_data)
+#                 else:
+#                     print(f"❌ Non-200 status for {sample.sentence_id}: {resp.status}")
+#         except Exception as e:
+#             print(f"[Attempt {attempt}] Error streaming {sample.sentence_id}: {e}")
+#             await asyncio.sleep(2 ** attempt)  # exponential backoff
+#     print(f"❌ Failed to fetch {sample.sentence_id} after {retries} attempts")
+#     return sample.sentence_id, None
 
 
-async def fetch_audio_limited(session, sample):
-    async with semaphore:
-        return await fetch_audio_stream(session, sample)
+# async def fetch_audio_limited(session, sample):
+#     async with semaphore:
+#         return await fetch_audio_stream(session, sample)
     
-async def fetch_all(samples):
-    connector = aiohttp.TCPConnector(limit=10)
-    async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [fetch_audio_limited(session, s) for s in samples]
-        print(f"Downloading {len(samples)} samples")
-        return await asyncio.gather(*tasks)
+# async def fetch_all(samples):
+#     connector = aiohttp.TCPConnector(limit=10)
+#     async with aiohttp.ClientSession(connector=connector) as session:
+#         tasks = [fetch_audio_limited(session, s) for s in samples]
+#         print(f"Downloading {len(samples)} samples")
+#         return await asyncio.gather(*tasks)
 
 # =========================================================================
 
@@ -84,7 +88,8 @@ async def fetch_subset(
     # Count total number of samples
     if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
-    if category == Categroy.spontaneous:
+    if category not in  [Categroy.read, Categroy.read_as_spontaneous]:
+        print(Categroy.read, Categroy.read_as_spontaneous)
         raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
 
     filters = [AudioSample.language == language]
@@ -127,20 +132,40 @@ async def fetch_subset(
 
 
 
-def estimate_total_size(samples: list) -> int:
-    """
-    Estimate total size of audio files in bytes from their public storage_link URLs.
-    """
-    total = 0
-    for s in samples:
-        try:
-            response = requests.head(s.storage_link, allow_redirects=True, timeout=5)
-            response.raise_for_status()
-            total += int(response.headers.get("Content-Length", 0))
 
-        except Exception as e:
-            print(f"Failed to fetch size for {s.storage_link}: {e}")
-    return total
+async def fetch_size(session, url):
+    try:
+        async with session.head(url, timeout=5) as resp:
+            size = int(resp.headers.get("Content-Length", 0))
+            return size
+    except Exception:
+        return 0
+
+async def estimate_total_size(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_size(session, url) for url in urls]
+        sizes = await asyncio.gather(*tasks)
+        return sum(sizes)
+
+
+
+# def estimate_total_size(samples, bucket, language, category):
+#     total_size = 0
+#     for s in samples:
+#         # key = f"{language.lower()}/{category}/{s.sentence_id}"
+#         key = f"{language.lower()}/{category.value if isinstance(category, Enum) else category}/{s.sentence_id}.wav"
+
+#         try:
+#             head = s3.head_object(Bucket=bucket, Key=key)
+#             total_size += head['ContentLength']
+#         except botocore.exceptions.ClientError as e:
+#             error_code = e.response['Error']['Code']
+#             if error_code == '404':
+#                 print(f"File not found: {key}")
+#             else:
+#                 print(f"Error accessing {key}: {e}")
+#             continue
+#     return total_size
 
 
 
@@ -173,7 +198,7 @@ def generate_metadata_buffer(samples, as_excel=True):
 
 
 
-def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int) -> str:
+def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int, sentence_id: Optional[str]=None) -> str:
     return f"""\
 
         📘 Dataset Export Summary
@@ -190,8 +215,8 @@ def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int) -
         ├── metadata.{"xlsx" if as_excel else "csv"}   - Tabular data with metadata
         ├── README.txt                                 - This file
         └── audio/                                     - Folder with audio clips
-            ├── hau_m_HS1M2_AK1_001.wav
-            ├── hau_m_HS1M2_AK1_002.wav
+            ├── {sentence_id}.wav
+            ├── {sentence_id}.wav
             └── ...
 
         📌 Notes
@@ -216,38 +241,23 @@ def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int) -
 #     zip_folder = f"{language}_{pct}pct_{today}"
 #     zip_name = f"{zip_folder}_dataset.zip"
 
-#     # z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
-    
-#     # for s in samples:
-#     #     audio_filename = f"{zip_folder}/audio/{s.sentence_id}"
-#     #     resp = requests.get(s.storage_link, stream=True)
-#     #     if resp.status_code == 200:
-#     #         z.write_iter(audio_filename, resp.iter_content(chunk_size=4096))
-
 #     audio_contents = await fetch_all(samples)
 #     valid_results = [(sid, data) for sid, data in audio_contents if data is not None]
-#     print(f"Successfully fetched {len(valid_results)} out of {len(samples)}")
+#     print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
 
+#     valid_ids = {sid for sid, _ in valid_results}
+#     filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
 
 #     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
 
-#     # for sentence_id, audio_data in valid_results:
-#     #     z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
-#     # OR
-    
-#     for sentence_id, audio_data in audio_contents:
-#         if audio_data is not None:
-#             print("This is the audio data", audio_data)
-#             z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
-    
+#     for sentence_id, audio_data in valid_results:
+#         z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
 
-#     # 2. Add metadata (Excel or CSV)
-#     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+#     metadata_buf, metadata_filename = generate_metadata_buffer(filtered_samples, as_excel=as_excel)
 #     metadata_buf.seek(0)
 #     z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
 
-#     # 3. Add README
-#     readme_text = generate_readme(language, pct, as_excel, len(samples))
+#     readme_text = generate_readme(language, pct, as_excel, len(filtered_samples))
 #     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
 #     return z, zip_name
@@ -257,27 +267,29 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     import zipstream
     import datetime
 
+    sentence_id = None
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     zip_folder = f"{language}_{pct}pct_{today}"
     zip_name = f"{zip_folder}_dataset.zip"
 
-    audio_contents = await fetch_all(samples)
-    valid_results = [(sid, data) for sid, data in audio_contents if data is not None]
-    print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
-
-    valid_ids = {sid for sid, _ in valid_results}
-    filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
-
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
 
-    for sentence_id, audio_data in valid_results:
-        z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
+    # global 
+    # # 1. Add audio files into /audio/
+    for idx, s in enumerate(samples):
+        audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
+        key = f"{language.lower()}/{category.value if isinstance(category, Enum) else category}/{s.sentence_id}.wav"
+        s3_stream = s3.get_object(Bucket=bucket, Key=key)['Body']
+        z.write_iter(audio_filename, s3_stream)
+        sentence_id=s.sentence_id
 
-    metadata_buf, metadata_filename = generate_metadata_buffer(filtered_samples, as_excel=as_excel)
+    # 2. Add metadata (Excel or CSV)
+    metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
     metadata_buf.seek(0)
     z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
 
-    readme_text = generate_readme(language, pct, as_excel, len(filtered_samples))
+    # 3. Add README
+    readme_text = generate_readme(language, pct, as_excel, len(samples), sentence_id)
     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
     return z, zip_name

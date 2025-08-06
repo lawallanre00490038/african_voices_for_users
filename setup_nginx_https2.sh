@@ -3,8 +3,40 @@
 set -e
 
 # Prompt user for domain and email
+echo "🔧 Setting up Nginx with SSL for your server..."
+read -p "Enter your server's IP address [51.20.115.13]: " IP
 read -p "Enter your domain or subdomain (e.g., api.eko360.ai): " DOMAIN
 read -p "Enter your email address for Let's Encrypt notifications: " EMAIL
+
+echo "✅ IP set to: $IP"
+echo "✅ Domain set to: $DOMAIN"
+
+# DNS verification
+echo
+echo "🔍 Checking if DNS A records are correctly set..."
+echo "Expected A Records:"
+echo "@    -> $IP"
+echo "www  -> $IP"
+
+# Check root domain
+echo "🔍 Checking DNS for $DOMAIN..."
+RESULT=$(nslookup $DOMAIN | grep 'Address:' | tail -n1 | awk '{print $2}')
+if [ "$RESULT" != "$IP" ]; then
+  echo "❌ $DOMAIN is not pointing to $IP. Found: $RESULT"
+else
+  echo "✅ $DOMAIN correctly points to $IP"
+fi
+
+# Check www subdomain
+echo "🔍 Checking DNS for www.$DOMAIN..."
+RESULT_WWW=$(nslookup www.$DOMAIN | grep 'Address:' | tail -n1 | awk '{print $2}')
+if [ "$RESULT_WWW" != "$IP" ]; then
+  echo "❌ www.$DOMAIN is not pointing to $IP. Found: $RESULT_WWW"
+else
+  echo "✅ www.$DOMAIN correctly points to $IP"
+fi
+
+
 
 APP_NAME="llminer-backend"
 NGINX_SITE="/etc/nginx/sites-available/$APP_NAME"

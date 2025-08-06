@@ -123,7 +123,7 @@ async def estimate_zip_size(
     age: str | None = Query(None),
     education: str | None = Query(None),
     domain: str | None = Query(None),
-    category: str | None = Query(None),
+    category: str | None = Query(),
     session: AsyncSession = Depends(get_session),
 ):
 
@@ -140,11 +140,12 @@ async def estimate_zip_size(
         session=session,
         language=language,
         pct=pct,
+        category=category,
         gender=gender,
         age_group=age,
         education=education,
         domain=domain,
-        category=category,
+        
     )
 
 

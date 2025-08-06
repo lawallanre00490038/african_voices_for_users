@@ -14,20 +14,6 @@ import asyncio
 
 
 
-async def fetch_size(session, url):
-    try:
-        async with session.head(url, timeout=5) as resp:
-            size = int(resp.headers.get("Content-Length", 0))
-            return size
-    except Exception:
-        return 0
-
-async def estimate_sizes_async(urls):
-    async with aiohttp.ClientSession() as session:
-        tasks = [fetch_size(session, url) for url in urls]
-        sizes = await asyncio.gather(*tasks)
-        return sum(sizes)
-
 
 class DownloadService:
     def __init__(self, s3_bucket_name: str = BUCKET):
@@ -137,10 +123,9 @@ class DownloadService:
 
     async def estimate_zip_size_only(
         self,
+        session: AsyncSession,
         language: str,
         pct: int | float,
-        session: AsyncSession,
-
         category: str = Categroy.read,
         gender: GenderEnum | None = None,
         age_group: str | None = None,
@@ -160,9 +145,8 @@ class DownloadService:
             pct=pct
         )
 
-        # est_size_bytes = estimate_total_size(samples)
-        # total_size, total_durations = estimate_total_size(samples)
-        total_size = await estimate_sizes_async([s.storage_link for s in samples])
+        total_size = await estimate_total_size([s.storage_link for s in samples])
+        # total_size = estimate_total_size(samples, self.s3_bucket_name, language, category)
         return {
             "estimated_size_bytes": total_size,
             "estimated_size_mb": round(total_size / (1024**2), 2),
@@ -180,7 +164,7 @@ class DownloadService:
         background_tasks: BackgroundTasks, 
         current_user: TokenUser,
 
-        category: str = Categroy.read,
+        category: str | None = Categroy.read,
         gender: GenderEnum | None = None,
         age_group: str | None = None,
         education: str | None = None,
