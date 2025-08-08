@@ -7,7 +7,7 @@ from src.auth.schemas import TokenUser
 from src.download.service import DownloadService
 from src.download.schemas import AudioPreviewResponse, EstimatedSizeResponse
 from src.db.models import  Categroy, GenderEnum
-
+from typing import Optional
 
 download_router = APIRouter()
 download_service = DownloadService()
@@ -59,11 +59,12 @@ def map_all_to_none(value: str | None) -> str | None:
 async def preview_audio_samples(
     language: str,
     limit: int = Query(10, ge=1, le=50),
-    gender: str = Query("male", alias="gender"),  # Accept as string
+    gender: str | None = Query(None, alias="gender"),
     age: str | None = Query(None),
     education: str | None = Query(None),
     domain: str | None = Query(None),
-    category: str = Query("read", alias="category"),
+    category: str | None = Query(None),
+    # category: str = Query("read", alias="category"),
 
     session: AsyncSession = Depends(get_session),
 ):
@@ -96,9 +97,8 @@ async def estimate_zip_size(
     age: str | None = Query(None),
     education: str | None = Query(None),
     domain: str | None = Query(None),
-    category: str | None = Query(),
+    category: str | None = Query(None),
     session: AsyncSession = Depends(get_session),
-    # category: Categroy | None = Query(Categroy.read, alias="category"),
 ):
 
     gender = map_all_to_none(gender)
