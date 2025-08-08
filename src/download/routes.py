@@ -96,9 +96,8 @@ async def estimate_zip_size(
     age: str | None = Query(None),
     education: str | None = Query(None),
     domain: str | None = Query(None),
-    category: str | None = Query(),
+    category: str | None = Query(None),
     session: AsyncSession = Depends(get_session),
-    # category: Categroy | None = Query(Categroy.read, alias="category"),
 ):
 
     gender = map_all_to_none(gender)
