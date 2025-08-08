@@ -63,7 +63,8 @@ async def preview_audio_samples(
     age: str | None = Query(None),
     education: str | None = Query(None),
     domain: str | None = Query(None),
-    category: str = Query("read", alias="category"),
+    category: str | None = Query(None),
+    # category: str = Query("read", alias="category"),
 
     session: AsyncSession = Depends(get_session),
 ):
