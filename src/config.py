@@ -16,6 +16,13 @@ class Settings(BaseSettings):
     BACKEND_URL: str
     EMAIL_FROM: str
 
+
+    OBS_ACCESS_KEY_ID: str
+    OBS_SECRET_ACCESS_KEY: str
+    OBS_ENDPOINT_URL: str
+    OBS_REGION: str
+    OBS_BUCKET_NAME: str = "dsn"
+
     S3_BUCKET_NAME: str
     AWS_ACCESS_KEY_ID: str
     AWS_SECRET_ACCESS_KEY: str
