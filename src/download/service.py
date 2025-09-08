@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
 from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES
 from src.download.utils import stream_zip_with_metadata, estimate_total_size, stream_zip_with_metadata_links
+from src.download.s3_config import create_presigned_url
 from typing import List, Optional
 
 
@@ -23,7 +24,7 @@ class DownloadService:
         session: AsyncSession,
         language: str,
         limit: int = 10,
-        category: str = Categroy.read,
+        category: str = Categroy.read_as_spontaneous,
         gender: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
@@ -40,6 +41,10 @@ class DownloadService:
             domain=domain,
         )
 
+        print(f"Found {len(samples)} samples for preview")
+
+        
+
         urls = [
             {
                 "id": str(s.id),
@@ -47,6 +52,9 @@ class DownloadService:
                 "sentence_id": s.sentence_id,
                 "sentence": s.sentence,
                 "storage_link": s.storage_link,
+                # "storage_link": create_presigned_url(
+                #     f"{s.language.lower()}/{s.category}/{s.sentence_id}.wav"
+                # ),
                 "gender": s.gender,
                 "age_group": s.age_group,
                 "edu_level": s.edu_level,
@@ -68,7 +76,7 @@ class DownloadService:
         session: AsyncSession,
         language: str,
         limit: Optional[int] = None,
-        category: str = Categroy.read,
+        category: str = Categroy.read_as_spontaneous,
         gender: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
@@ -78,11 +86,11 @@ class DownloadService:
         
         if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
-        if category == Categroy.spontaneous:
-            raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
+        # if category == Categroy.spontaneous:
+        #     raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
 
         filters = [AudioSample.language == language]
-
+        
         if gender:
             filters.append(AudioSample.gender == gender)
         if category:
@@ -168,7 +176,6 @@ class DownloadService:
         education: str | None = None,
         domain: str | None = None,
 
-        
         as_excel: bool = True
     ):
 
@@ -196,18 +203,9 @@ class DownloadService:
         await session.commit() 
 
         # Stream ZIP
-        if language.lower() == "hausa":
-            zip_stream, zip_filename = await stream_zip_with_metadata_links(
-                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
+        zip_stream, zip_filename = await stream_zip_with_metadata_links(
+                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
             )
-        else:
-            zip_stream, zip_filename = await stream_zip_with_metadata(
-                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct
-            )
-
-        # zip_stream, zip_filename = await stream_zip_with_metadata_links(
-        #         samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
-        #     )
 
         return StreamingResponse(
             zip_stream,

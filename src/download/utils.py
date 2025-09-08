@@ -18,22 +18,10 @@ import botocore.exceptions
 from fastapi import HTTPException
 from src.db.models import AudioSample, Categroy
 from src.download.s3_config import  SUPPORTED_LANGUAGES
+from src.download.s3_config import create_presigned_url, s3
+from src.download.galaxy import fetch_audio_stream_galaxy
 from sqlmodel import select, and_
 
-
-
-# =========================================================================
-# async def fetch_audio(session, sample):
-#     async with session.get(sample.storage_link) as resp:
-#         if resp.status == 200:
-#             return sample.sentence_id, await resp.read()
-#         return sample.sentence_id, None
-
-# async def fetch_all(samples):
-#     async with aiohttp.ClientSession() as session:
-#         tasks = [fetch_audio(session, s) for s in samples]
-#         return await asyncio.gather(*tasks)
-    
 
 
 # ================================================================================
@@ -78,7 +66,7 @@ async def fetch_subset(
     language: str, 
     pct: int | float,
 
-    category: str | None = Categroy.read,
+    category: str | None = Categroy.read_as_spontaneous,
     gender: str | None = None,
     age_group: str | None = None,
     education: str | None = None,
@@ -88,9 +76,9 @@ async def fetch_subset(
     # Count total number of samples
     if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
-    if category not in  [Categroy.read, Categroy.read_as_spontaneous]:
-        print(Categroy.read, Categroy.read_as_spontaneous)
-        raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
+    # if category not in  [Categroy.read, Categroy.read_as_spontaneous]:
+    #     print(Categroy.read, Categroy.read_as_spontaneous)
+    #     raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
 
     filters = [AudioSample.language == language]
 
@@ -146,26 +134,6 @@ async def estimate_total_size(urls):
         tasks = [fetch_size(session, url) for url in urls]
         sizes = await asyncio.gather(*tasks)
         return sum(sizes)
-
-
-
-# def estimate_total_size(samples, bucket, language, category):
-#     total_size = 0
-#     for s in samples:
-#         # key = f"{language.lower()}/{category}/{s.sentence_id}"
-#         key = f"{language.lower()}/{category.value if isinstance(category, Enum) else category}/{s.sentence_id}.wav"
-
-#         try:
-#             head = s3.head_object(Bucket=bucket, Key=key)
-#             total_size += head['ContentLength']
-#         except botocore.exceptions.ClientError as e:
-#             error_code = e.response['Error']['Code']
-#             if error_code == '404':
-#                 print(f"File not found: {key}")
-#             else:
-#                 print(f"Error accessing {key}: {e}")
-#             continue
-#     return total_size
 
 
 
@@ -295,3 +263,56 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
     return z, zip_name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+# def estimate_total_size(samples, bucket, language, category):
+#     total_size = 0
+#     for s in samples:
+#         # key = f"{language.lower()}/{category}/{s.sentence_id}"
+#         key = f"{language.lower()}/{category.value if isinstance(category, Enum) else category}/{s.sentence_id}.wav"
+
+#         try:
+#             head = s3.head_object(Bucket=bucket, Key=key)
+#             total_size += head['ContentLength']
+#         except botocore.exceptions.ClientError as e:
+#             error_code = e.response['Error']['Code']
+#             if error_code == '404':
+#                 print(f"File not found: {key}")
+#             else:
+#                 print(f"Error accessing {key}: {e}")
+#             continue
+#     return total_size

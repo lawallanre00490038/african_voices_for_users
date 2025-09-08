@@ -17,38 +17,7 @@ def map_all_to_none(value: str | None) -> str | None:
     return None if value == "all" else value
 
 
-# @download_router.get(
-#     "/samples/{language}/preview",
-#     response_model=AudioPreviewResponse,
-#     summary="Preview audio samples",
-#     description="Returns a list of audio samples with presigned URLs for playback.",
-# )
-# async def preview_audio_samples(
-#     language: str,
-#     limit: int = Query(10, ge=1, le=50),
-#     gender: GenderEnum | None = Query(GenderEnum.male, alias="gender"),
-#     age: str | None = Query(None),
-#     education: str | None = Query(None),
-#     domain: str | None = Query(None),
-#     category: Categroy | None = Query(Categroy.read, alias="category"),
-#     session: AsyncSession = Depends(get_session),
-# ):
     
-#     """
-#      Get a list of audio samples for preview.
-#     """
-#     return await download_service.preview_audio_samples(
-#         session=session, 
-#         language=language, 
-#         limit=limit, 
-#         gender=gender, 
-#         age_group=age, 
-#         education=education, 
-#         domain=domain, 
-#         category=category
-#     )
-
-
 
 @download_router.get(
     "/samples/{language}/preview",
@@ -64,7 +33,6 @@ async def preview_audio_samples(
     education: str | None = Query(None),
     domain: str | None = Query(None),
     category: str | None = Query(None),
-    # category: str = Query("read", alias="category"),
 
     session: AsyncSession = Depends(get_session),
 ):
@@ -109,6 +77,8 @@ async def estimate_zip_size(
 
     gender = GenderEnum(gender) if gender else None
     category = Categroy(category) if category else None
+
+    print("The category is: ", category)
 
     return await download_service.estimate_zip_size_only(
         session=session,
