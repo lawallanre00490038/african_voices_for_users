@@ -1,19 +1,32 @@
 import boto3
 from dotenv import load_dotenv
+from botocore.client import Config
 from src.config import settings
 
 load_dotenv()
 
 
+# s3 = boto3.client(
+#     's3',
+#     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+#     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+#     region_name=settings.AWS_REGION,
+#     endpoint_url=settings.AWS_ENDPOINT_URL
+# )
+
+
 s3 = boto3.client(
-    's3',
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    region_name=settings.AWS_REGION,
-    endpoint_url=settings.AWS_ENDPOINT_URL
+    "s3",
+    aws_access_key_id=settings.OBS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.OBS_SECRET_ACCESS_KEY,
+    endpoint_url="https://obsv3.cn-global-1.gbbcloud.com",
+    # "https://obs.cn-global-1.myhuaweicloud.com", 
+    region_name="",
+    config=Config(s3={'addressing_style': 'path'})
 )
 
-BUCKET = settings.S3_BUCKET_NAME
+BUCKET = settings.OBS_BUCKET_NAME
+print(f"Using bucket: {BUCKET}")
 
 
 SUPPORTED_LANGUAGES = {"Naija", "Yoruba", "Hausa", "Igbo"}
