@@ -13,7 +13,8 @@ download_router = APIRouter()
 download_service = DownloadService()
 
 
-def map_all_to_none(value: str | None) -> str | None:
+def map_all_to_none(value: str | None, language: str | None = None) -> str | None:
+
     if value is None:
         return None
     if value.lower() == "all":
@@ -23,6 +24,18 @@ def map_all_to_none(value: str | None) -> str | None:
     if value.lower() == "spontaneous":
         return "read_as_spontaneous"
     return value
+
+
+def map_EV_to_EV(category: str | None, language: str | None = None) -> str | None:
+    if language.lower() in ["hausa"]:
+        if category is None:
+            return None
+        if category.lower() == "all":
+            return None
+        if category.lower() == "ec":
+            print("Mapping EC to EV for Hausa")
+            return "EV"
+    return category
 
     
 
@@ -46,7 +59,7 @@ async def preview_audio_samples(
     gender = map_all_to_none(gender)
     age = map_all_to_none(age)
     education = map_all_to_none(education)
-    domain = map_all_to_none(domain)
+    domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
@@ -81,7 +94,7 @@ async def estimate_zip_size(
     gender = map_all_to_none(gender)
     age = map_all_to_none(age)
     education = map_all_to_none(education)
-    domain = map_all_to_none(domain)
+    domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
@@ -122,7 +135,7 @@ async def download_zip(
     gender = map_all_to_none(gender)
     age = map_all_to_none(age)
     education = map_all_to_none(education)
-    domain = map_all_to_none(domain)
+    domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
@@ -135,7 +148,6 @@ async def download_zip(
         background_tasks=background_tasks, 
         current_user=current_user, 
         as_excel=as_excel,
-
         gender=gender, 
         age_group=age, 
         education=education, 
