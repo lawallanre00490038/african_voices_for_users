@@ -14,8 +14,15 @@ download_service = DownloadService()
 
 
 def map_all_to_none(value: str | None) -> str | None:
-    return None if value == "all" else value
-
+    if value is None:
+        return None
+    if value.lower() == "all":
+        return None
+    if value.lower() == "read":
+        return "read_as_spontaneous"
+    if value.lower() == "spontaneous":
+        return "read_as_spontaneous"
+    return value
 
     
 
@@ -44,6 +51,8 @@ async def preview_audio_samples(
 
     gender = GenderEnum(gender) if gender else None
     category = Categroy(category) if category else None
+
+    print("The category is: ", category)
 
     return await download_service.preview_audio_samples(
         session=session, 
