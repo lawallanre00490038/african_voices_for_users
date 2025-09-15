@@ -6,7 +6,7 @@ from src.auth.utils import get_current_user
 from src.auth.schemas import TokenUser
 from src.download.service import DownloadService
 from src.download.schemas import AudioPreviewResponse, EstimatedSizeResponse
-from src.db.models import  Categroy, GenderEnum
+from src.db.models import  Category, GenderEnum
 from typing import Optional
 from src.config import settings
 
@@ -32,6 +32,8 @@ def map_all_to_none(value: str | None, language: str | None = None) -> str | Non
     if val == "read_as_spontaneous":
         return "read_with_spontaneous"
     if val == "spontaneous":
+        if lang in ["hausa"]:
+            return "read_with_spontaneous"
         return "spontaneous"
     return val
 
@@ -74,7 +76,7 @@ async def preview_audio_samples(
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
-    category = Categroy(category) if category else None
+    category = Category(category) if category else None
 
     print("The category is: ", category)
 
@@ -109,7 +111,7 @@ async def estimate_zip_size(
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
-    category = Categroy(category) if category else None
+    category = Category(category) if category else None
 
     print("The category is: ", category)
 
@@ -150,7 +152,7 @@ async def download_zip(
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
-    category = Categroy(category) if category else None
+    category = Category(category) if category else None
 
     return await download_service.download_zip_with_metadata(
         language=language, 
@@ -195,7 +197,7 @@ async def start_download(
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
-    category = Categroy(category) if category else None
+    category = Category(category) if category else None
 
     
     return await download_service.start_zip_job(

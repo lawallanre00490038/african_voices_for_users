@@ -43,7 +43,7 @@ COLUMNS=[
 ]
 
 VALID_PERCENTAGES = {5, 20, 40, 50, 60, 80, 100}
-VALID_CATEGORIES = {"read", "spontaneous", "read_as_spontaneous"}
+VALID_CATEGORIES = {"read", "spontaneous", "read_with_spontaneous"}
 
 
 
@@ -65,7 +65,7 @@ def generate_obs_signed_url(language: str, category: str, filename: str, storage
     
     Parameters:
         language: e.g. "naija", "yoruba", "igbo"
-        category: e.g. "read", "spontaneous", "read_as_spontaneous"
+        category: e.g. "read", "spontaneous", "read_with_spontaneous"
         filename: e.g. "pcm_AG_001_000002_R2.wav"
         expiration: time in seconds for URL expiry (default 3600)
     
@@ -99,9 +99,7 @@ def generate_obs_signed_url(language: str, category: str, filename: str, storage
 
     # Build final URL (OBS Share format)
     url = f"https://{bucket}.obsv3.cn-global-1.gbbcloud.com:443/{key}?AccessKeyId={access_key}&Expires={expires}&Signature={signature_enc}"
-
-    print(f"\nGenerated OBS URL: {url}")
-    print(f"Rough file: {filename}.wav\n")
+    
     return url
 
 

@@ -25,10 +25,10 @@ class RoleEnum(str, Enum):
     user = "user"
     admin = "admin"
 
-class Categroy(str, Enum):
+class Category(str, Enum):
     read = "read"
     spontaneous = "spontaneous"
-    read_as_spontaneous = "read_as_spontaneous"
+    read_with_spontaneous = "read_with_spontaneous"
 
 class GenderEnum(str, Enum):
     male = "male"
@@ -86,7 +86,7 @@ class AudioSample(SQLModel, table=True):
     snr:  Optional[int] = Field(sa_column=Column(pg.INTEGER, default=40))
 
     domain: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None))
-    category: str = Field(sa_column=Column(pg.VARCHAR, default=Categroy.read))
+    category: str = Field(sa_column=Column(pg.VARCHAR, default=Category.read))
     created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     uploaded_at: datetime = Field(default_factory=datetime.utcnow)
 

@@ -1,7 +1,7 @@
 from fastapi import HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from sqlmodel import select, and_
-from src.db.models import AudioSample, DownloadLog, Categroy, GenderEnum
+from src.db.models import AudioSample, DownloadLog, Category, GenderEnum
 from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
@@ -25,7 +25,7 @@ class DownloadService:
         session: AsyncSession,
         language: str,
         limit: int = 10,
-        category: str = Categroy.read_as_spontaneous,
+        category: str = Category.read_with_spontaneous,
         gender: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
@@ -80,16 +80,13 @@ class DownloadService:
         session: AsyncSession,
         language: str,
         limit: Optional[int] = None,
-        category: str = Categroy.read_as_spontaneous,
+        category: str = Category.read_with_spontaneous,
         gender: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
         domain: str | None = None,
             
     ):
-        
-        if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
 
         filters = [AudioSample.language == language]
         
@@ -134,7 +131,7 @@ class DownloadService:
         session: AsyncSession,
         language: str,
         pct: int | float,
-        category: str = Categroy.read,
+        category: str = Category.read_with_spontaneous,
         gender: GenderEnum | None = None,
         age_group: str | None = None,
         education: str | None = None,
@@ -152,7 +149,7 @@ class DownloadService:
             domain=domain,
             pct=pct
         )
-        
+
         try:
             total_size = await estimate_total_size([s.get("storage_link") for s in samples])
         except Exception as e:
@@ -174,7 +171,7 @@ class DownloadService:
         background_tasks: BackgroundTasks, 
         current_user: TokenUser,
 
-        category: str | None = Categroy.read,
+        category: str | None = Category.read_with_spontaneous,
         gender: GenderEnum | None = None,
         age_group: str | None = None,
         education: str | None = None,
@@ -208,7 +205,7 @@ class DownloadService:
 
         # Stream ZIP
         try:
-            zip_stream, zip_filename = await stream_zip_with_metadata(
+            zip_stream, zip_filename = await stream_zip_with_metadata_links(
                     samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
                 )
         except Exception as e:
@@ -234,7 +231,7 @@ class DownloadService:
         language: str,
         pct: int | float,
         current_user: TokenUser,
-        category: str | None = Categroy.read,
+        category: str | None = Category.read,
         gender: GenderEnum | None = None,
         age_group: str | None = None,
         education: str | None = None,

@@ -15,7 +15,7 @@ import asyncio, os
 from enum import Enum
 import botocore.exceptions
 from fastapi import HTTPException
-from src.db.models import AudioSample, Categroy
+from src.db.models import AudioSample, Category
 from src.download.s3_config import  SUPPORTED_LANGUAGES
 from src.download.s3_config import s3
 from src.download.s3_config import generate_obs_signed_url, map_sentence_id_to_transcript_obs
@@ -28,23 +28,23 @@ from src.config import settings
 semaphore = asyncio.Semaphore(5)
 
 async def fetch_audio_stream(session, sample, retries=3):
-    print(f"Fetching {sample.sentence_id}")
+    print(f"Fetching {sample.get('sentence_id')}")
     for attempt in range(1, retries + 1):
         try:
-            async with session.get(sample.storage_link, timeout=10) as resp:
+            async with session.get(sample.get('storage_link'), timeout=10) as resp:
                 if resp.status == 200:
                     audio_data = bytearray()
                     async for chunk in resp.content.iter_chunked(1024):
                         audio_data.extend(chunk)
-                    print(f"✅ Fetched {sample.sentence_id}")
-                    return sample.sentence_id, bytes(audio_data)
+                    print(f"✅ Fetched {sample.get('sentence_id')}")
+                    return sample.get('sentence_id'), bytes(audio_data)
                 else:
-                    print(f"❌ Non-200 status for {sample.sentence_id}: {resp.status}")
+                    print(f"❌ Non-200 status for {sample.get('sentence_id')}: {resp.status}")
         except Exception as e:
-            print(f"[Attempt {attempt}] Error streaming {sample.sentence_id}: {e}")
+            print(f"[Attempt {attempt}] Error streaming {sample.get('sentence_id')}: {e}")
             await asyncio.sleep(2 ** attempt)  # exponential backoff
-    print(f"❌ Failed to fetch {sample.sentence_id} after {retries} attempts")
-    return sample.sentence_id, None
+    print(f"❌ Failed to fetch {sample.get('sentence_id')} after {retries} attempts")
+    return sample.get('sentence_id'), None
 
 
 async def fetch_audio_limited(session, sample):
@@ -66,7 +66,7 @@ async def fetch_subset(
     language: str, 
     pct: int | float,
 
-    category: str | None = Categroy.read_as_spontaneous,
+    category: str | None = Category.read_with_spontaneous,
     gender: str | None = None,
     age_group: str | None = None,
     education: str | None = None,
@@ -240,7 +240,7 @@ async def stream_zip_with_metadata_links(samples, bucket: str, as_excel=True, la
     print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
 
     valid_ids = {sid for sid, _ in valid_results}
-    filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
+    filtered_samples = [s for s in samples if s.get('sentence_id') in valid_ids]
 
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
     
@@ -275,7 +275,13 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     # # 1. Add audio files into /audio/
     for idx, s in enumerate(samples):
         audio_filename = f"{zip_folder}/audio/{s.get('sentence_id')}.wav"
+        print("the language is: ", language, "\n\n")
+        print("the category is: ", category, "\n\n")
+
+        category = s.get('category') or "read_with_spontaneous"
+
         key = f"{language.lower()}/{category.lower()}/{s.get('sentence_id')}.wav"
+        print(f"\nDownloading {audio_filename}", "\n", key)
         s3_stream = s3.get_object(Bucket=settings.OBS_BUCKET_NAME, Key=key)['Body']
         print(f"\nDownloading {audio_filename}", "\n", s3_stream)
         z.write_iter(audio_filename, s3_stream)
