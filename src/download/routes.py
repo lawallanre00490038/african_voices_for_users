@@ -32,9 +32,7 @@ def map_all_to_none(value: str | None, language: str | None = None) -> str | Non
     if val == "read_as_spontaneous":
         return "read_with_spontaneous"
     if val == "spontaneous":
-        if lang in ["hausa"]:
-            return "read_with_spontaneous"
-        return "spontaneous"
+        return "read_with_spontaneous"
     return val
 
 

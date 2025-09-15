@@ -1,9 +1,3 @@
--- Make sure to use a valid UUID or generate one dynamically
-INSERT INTO dataset (id, name, description, created_by, created_at)
-VALUES (
-    'hausa',  -- Replace with your desired or with the language name instead
-    'Sample Dataset',
-    'This is a test dataset entry',
-    '16c449a6-9d35-45d9-996d-45febd413282',  -- Replace with your user ID
-    NOW()
-);
+version https://git-lfs.github.com/spec/v1
+oid sha256:0d42f700e1856188e50d93609f7daf3886b14e50e5cebfb7ee3ace160a926452
+size 360
