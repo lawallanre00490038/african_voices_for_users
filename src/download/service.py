@@ -270,9 +270,3 @@ class DownloadService:
             "status": result.status,
             "download_url": result.download_url if result.status == "ready" else None,
         }
-
-
-
-
-
-
