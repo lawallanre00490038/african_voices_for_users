@@ -1,4 +1,5 @@
 from src.config import settings
+from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
@@ -27,3 +28,23 @@ async def create_tables():
 async def get_session():
     async with async_session_maker() as session:
         yield session
+
+
+
+
+DATABASE_URL_SYNC = f"postgresql://{settings.PGUSER}:{settings.PGPASSWORD}@{settings.PGHOST}:{settings.PGPORT}/{settings.PGDATABASE}"
+
+
+sync_engine = create_engine(
+    DATABASE_URL_SYNC,
+    echo=False,
+    future=True
+)
+SyncSessionLocal = sessionmaker(
+    bind=sync_engine,
+    autoflush=False,
+    autocommit=False
+)
+
+def get_sync_session():
+    return SyncSessionLocal()

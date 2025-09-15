@@ -5,17 +5,18 @@ from src.db.models import AudioSample, DownloadLog, Categroy, GenderEnum
 from src.auth.schemas import TokenUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from .utils import fetch_subset
-from src.download.s3_config import BUCKET, SUPPORTED_LANGUAGES
+from src.download.s3_config import  SUPPORTED_LANGUAGES
+from src.config import settings
 from src.download.utils import stream_zip_with_metadata, estimate_total_size, stream_zip_with_metadata_links
-from src.download.s3_config import create_presigned_url
+from src.download.s3_config import generate_obs_signed_url, map_sentence_id_to_transcript_obs
 from typing import List, Optional
-
-
+from src.download.tasks import create_dataset_zip_gcp
+import uuid
 
 
 
 class DownloadService:
-    def __init__(self, s3_bucket_name: str = BUCKET):
+    def __init__(self, s3_bucket_name: str = settings.S3_BUCKET_NAME):
     
         self.s3_bucket_name = s3_bucket_name
     
@@ -41,10 +42,6 @@ class DownloadService:
             domain=domain,
         )
 
-        print(f"Found {len(samples)} samples for preview")
-
-        
-
         urls = [
             {
                 "id": str(s.id),
@@ -52,10 +49,14 @@ class DownloadService:
                 "sentence_id": s.sentence_id,
                 "sentence": s.sentence,
                 "storage_link": s.storage_link,
-                # "storage_link": create_presigned_url(
-                #     f"{s.language.lower()}/{s.category}/{s.sentence_id}.wav"
-                # ),
                 "gender": s.gender,
+                "audio_url_obs": generate_obs_signed_url(
+                    language=s.language.lower(),
+                    category=s.category,
+                    filename=f"{s.sentence_id}.wav",
+                    storage_link=s.storage_link,
+                ),
+                "transcript_url_obs": map_sentence_id_to_transcript_obs(s.sentence_id, s.language, s.category, s.sentence),
                 "age_group": s.age_group,
                 "edu_level": s.edu_level,
                 "durations": s.durations,
@@ -66,9 +67,12 @@ class DownloadService:
                 "category": s.category,
 
             }
+            
             for s in samples
         ]
-        return {"samples": urls}
+        return {
+            "samples": urls
+        }
 
 
     async def filter_core(
@@ -86,8 +90,6 @@ class DownloadService:
         
         if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
-        # if category == Categroy.spontaneous:
-        #     raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
 
         filters = [AudioSample.language == language]
         
@@ -150,9 +152,11 @@ class DownloadService:
             domain=domain,
             pct=pct
         )
-
-        total_size = await estimate_total_size([s.storage_link for s in samples])
-        # total_size = estimate_total_size(samples, self.s3_bucket_name, language, category)
+        
+        try:
+            total_size = await estimate_total_size([s.get("storage_link") for s in samples])
+        except Exception as e:
+            raise HTTPException(500, f"Failed to estimate size: {e}")
         return {
             "estimated_size_bytes": total_size,
             "estimated_size_mb": round(total_size / (1024**2), 2),
@@ -196,16 +200,19 @@ class DownloadService:
             session.add,
             DownloadLog(
                 user_id=current_user.id,
-                dataset_id=samples[0].dataset_id,
+                dataset_id=samples[0].get("dataset_id"),
                 percentage=pct,
             ),
         )
         await session.commit() 
 
         # Stream ZIP
-        zip_stream, zip_filename = await stream_zip_with_metadata_links(
-                samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
-            )
+        try:
+            zip_stream, zip_filename = await stream_zip_with_metadata(
+                    samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
+                )
+        except Exception as e:
+            raise HTTPException(500, f"Failed to generate ZIP: {e}")
 
         return StreamingResponse(
             zip_stream,
@@ -214,3 +221,58 @@ class DownloadService:
                 "Content-Disposition": f"attachment; filename={zip_filename}"
             }
         )
+
+
+
+
+
+
+
+    async def start_zip_job(
+        self,
+        session: AsyncSession,
+        language: str,
+        pct: int | float,
+        current_user: TokenUser,
+        category: str | None = Categroy.read,
+        gender: GenderEnum | None = None,
+        age_group: str | None = None,
+        education: str | None = None,
+        domain: str | None = None,
+        as_excel: bool = True,
+    ):
+        request_id = str(uuid.uuid4())
+
+        # Log request in DB
+        download_log = DownloadLog(
+            id=request_id,
+            user_id=current_user.id,
+            dataset_id=None,
+            percentage=pct,
+            status="processing"
+        )
+        session.add(download_log)
+        await session.commit()
+
+        # Enqueue async job
+        create_dataset_zip_gcp(
+            request_id, language, pct, category, gender, age_group, education, domain, as_excel
+        )
+
+        return {"request_id": request_id}
+
+
+    async def get_zip_status(self, session: AsyncSession, request_id: str):
+        result = await session.get(DownloadLog, request_id)
+        if not result:
+            raise HTTPException(404, "No such request")
+        return {
+            "status": result.status,
+            "download_url": result.download_url if result.status == "ready" else None,
+        }
+
+
+
+
+
+

@@ -6,9 +6,11 @@ from pydantic import BaseModel, Field
 class AudioSamplePreview(BaseModel):
     id: Optional[str] = Field(default=None)
     annotator_id: str
-    sentence_id: str
-    sentence: str
-    storage_link: str
+    sentence_id: Optional[str] = Field(default=None)
+    sentence: Optional[str] = Field(default=None)
+    storage_link: Optional[str] = Field(default=None)
+    audio_url_obs: Optional[str] = Field(default=None)
+    transcript_url_obs: Optional[str] = Field(default=None)
     gender: Optional[str] = Field(default=None)
     age_group: Optional[str] = Field(default=None)
     edu_level: Optional[str] = Field(default=None)
