@@ -24,17 +24,18 @@ def map_all_to_none(value: str | None, language: str | None = None) -> str | Non
     lang = (language or "").lower()
 
     print(f"Mapping value: {val} for language: {lang}")
+    print("category: ", val)
 
     if val == "all":
         return None
     if val == "read":
-        if lang not in ["hausa", "igbo", "yoruba"]:
+        if lang in ["naija"]:
             return "read"
         return "read_with_spontaneous"
     if val == "read_as_spontaneous":
         return "read_with_spontaneous"
-    if val == "spontaneous":
-        return "read_with_spontaneous"
+    if val == "spontaneous" and lang in ["naija", "igbo", "yoruba"]:
+        return "spontaneous"
     return val
 
 
@@ -78,7 +79,6 @@ async def preview_audio_samples(
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
 
-    print("The category is: ", category)
 
     return await download_service.preview_audio_samples(
         session=session, 
@@ -112,8 +112,6 @@ async def estimate_zip_size(
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
-
-    print("The category is: ", category)
 
     return await download_service.estimate_zip_size_only(
         session=session,
