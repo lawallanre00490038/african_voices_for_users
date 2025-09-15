@@ -2,7 +2,7 @@ import boto3
 import asyncio
 from botocore.exceptions import ClientError
 from enum import Enum
-from src.db.models import Categroy
+from src.db.models import Category
 from src.config import settings
 
 # Assuming you already have this configured in s3_config.py
