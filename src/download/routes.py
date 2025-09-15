@@ -23,6 +23,8 @@ def map_all_to_none(value: str | None, language: str | None = None) -> str | Non
     val = value.lower()
     lang = (language or "").lower()
 
+    print(f"Mapping value: {val} for language: {lang}")
+
     if val == "all":
         return None
     if val == "read":
