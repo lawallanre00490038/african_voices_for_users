@@ -8,23 +8,47 @@ from src.download.service import DownloadService
 from src.download.schemas import AudioPreviewResponse, EstimatedSizeResponse
 from src.db.models import  Categroy, GenderEnum
 from typing import Optional
+from src.config import settings
 
 download_router = APIRouter()
-download_service = DownloadService()
+download_service = DownloadService(
+    s3_bucket_name=settings.OBS_BUCKET_NAME
+)
 
 
-def map_all_to_none(value: str | None) -> str | None:
-    if value is None:
+def map_all_to_none(value: str | None, language: str | None = None) -> str | None:
+    if not value:
         return None
-    if value.lower() == "all":
-        return None
-    if value.lower() == "read":
-        return "read_as_spontaneous"
-    if value.lower() == "spontaneous":
-        return "read_as_spontaneous"
-    return value
 
-    
+    val = value.lower()
+    lang = (language or "").lower()
+
+    if val == "all":
+        return None
+    if val == "read":
+        if lang not in ["hausa", "igbo", "yoruba"]:
+            return "read"
+        return "read_with_spontaneous"
+    if val == "read_as_spontaneous":
+        return "read_with_spontaneous"
+    if val == "spontaneous":
+        return "spontaneous"
+    return val
+
+
+
+def map_EV_to_EV(category: str | None, language: str | None = None) -> str | None:
+    if language.lower() in ["hausa"]:
+        if category is None:
+            return None
+        if category.lower() == "all":
+            return None
+        if category.lower() == "ec":
+            print("Mapping EC to EV for Hausa")
+            return "EV"
+    return category
+
+
 
 @download_router.get(
     "/samples/{language}/preview",
@@ -46,7 +70,7 @@ async def preview_audio_samples(
     gender = map_all_to_none(gender)
     age = map_all_to_none(age)
     education = map_all_to_none(education)
-    domain = map_all_to_none(domain)
+    domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
@@ -81,7 +105,7 @@ async def estimate_zip_size(
     gender = map_all_to_none(gender)
     age = map_all_to_none(age)
     education = map_all_to_none(education)
-    domain = map_all_to_none(domain)
+    domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
@@ -122,7 +146,7 @@ async def download_zip(
     gender = map_all_to_none(gender)
     age = map_all_to_none(age)
     education = map_all_to_none(education)
-    domain = map_all_to_none(domain)
+    domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category)
 
     gender = GenderEnum(gender) if gender else None
@@ -135,10 +159,59 @@ async def download_zip(
         background_tasks=background_tasks, 
         current_user=current_user, 
         as_excel=as_excel,
-
         gender=gender, 
         age_group=age, 
         education=education, 
         domain=domain, 
         category=category
     )
+
+
+
+
+
+
+
+
+
+@download_router.post("/zip/{language}/{pct}/celery", include_in_schema=False)
+async def start_download(
+    language: str,
+    pct: int | float,
+    current_user: TokenUser = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+    gender: str | None = Query(None),
+    age: str | None = Query(None),
+    education: str | None = Query(None),
+    domain: str | None = Query(None),
+    category: str | None = Query(None),
+    as_excel: bool = True,
+):
+
+    gender = map_all_to_none(gender)
+    age = map_all_to_none(age)
+    education = map_all_to_none(education)
+    domain = map_EV_to_EV(domain, language)
+    category = map_all_to_none(category)
+
+    gender = GenderEnum(gender) if gender else None
+    category = Categroy(category) if category else None
+
+    
+    return await download_service.start_zip_job(
+        session=session,
+        language=language,
+        pct=pct,
+        current_user=current_user,
+        gender=gender,
+        age_group=age,
+        education=education,
+        domain=domain,
+        category=category,
+        as_excel=as_excel,
+    )
+
+
+@download_router.get("/zip/status/{request_id}", include_in_schema=False)
+async def get_zip_status(request_id: str, session: AsyncSession = Depends(get_session)):
+    return await download_service.get_zip_status(session, request_id)

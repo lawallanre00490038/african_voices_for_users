@@ -4,7 +4,6 @@ import pandas as pd
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from .s3_config import s3
 from typing import Optional
 import datetime
 import requests
@@ -18,9 +17,10 @@ import botocore.exceptions
 from fastapi import HTTPException
 from src.db.models import AudioSample, Categroy
 from src.download.s3_config import  SUPPORTED_LANGUAGES
-from src.download.s3_config import create_presigned_url, s3
-from src.download.galaxy import fetch_audio_stream_galaxy
+from src.download.s3_config import s3
+from src.download.s3_config import generate_obs_signed_url, map_sentence_id_to_transcript_obs
 from sqlmodel import select, and_
+from src.config import settings
 
 
 
@@ -76,9 +76,6 @@ async def fetch_subset(
     # Count total number of samples
     if language not in SUPPORTED_LANGUAGES:
             raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
-    # if category not in  [Categroy.read, Categroy.read_as_spontaneous]:
-    #     print(Categroy.read, Categroy.read_as_spontaneous)
-    #     raise HTTPException(400, f"Unavailable category: {category}. Only 'Read' and 'Read_as_Spontanueos' are available")
 
     filters = [AudioSample.language == language]
 
@@ -115,8 +112,37 @@ async def fetch_subset(
 
     if not response:
         raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
+    
+    urls = [
+        {
+            "id": str(s.id),
+            "annotator_id": s.annotator_id,
+            "sentence_id": s.sentence_id,
+            "sentence": s.sentence,
+            "storage_link": s.storage_link,
+            "gender": s.gender,
+            "audio_url_obs": generate_obs_signed_url(
+                language=s.language.lower(),
+                category=s.category,
+                filename=f"{s.sentence_id}.wav",
+                storage_link=s.storage_link,
+            ),
+            "transcript_url_obs": map_sentence_id_to_transcript_obs(s.sentence_id, s.language, s.category, s.sentence),
+            "age_group": s.age_group,
+            "edu_level": s.edu_level,
+            "durations": s.durations,
+            "language": s.language,
+            "edu_level": s.edu_level,
+            "snr": s.snr,
+            "domain": s.domain,
+            "category": s.category,
+
+        }
+        
+        for s in response
+    ]
     print(response)
-    return response
+    return urls
 
 
 
@@ -140,19 +166,19 @@ async def estimate_total_size(urls):
 def generate_metadata_buffer(samples, as_excel=True):
     """Create metadata buffer in either Excel or CSV."""
     df = pd.DataFrame([{
-        "speaker_id": s.annotator_id,
-        "transcript_id": s.sentence_id,
-        "transcript": s.sentence,
-        "audio_path": f"audio/{s.sentence_id}.wav",
-        "gender": s.gender,
-        "age_group": s.age_group,
-        "edu_level": s.edu_level,
-        "durations": s.durations,
-        "language": s.language,
-        "edu_level": s.edu_level,
-        "snr": s.snr,
-        "domain": s.domain,
-        "category": s.category,
+        "speaker_id": s.get('annotator_id'),
+        "transcript_id": s.get('sentence_id'),
+        "transcript": s.get('sentence') or "",
+        "audio_path": f"audio/{s.get('sentence_id')}.wav",
+        "gender": s.get('gender'),
+        "age_group": s.get('age_group'),
+        "edu_level": s.get('edu_level'),
+        "durations": s.get('durations'),
+        "language": s.get('language'),
+        "edu_level": s.get('edu_level'),
+        "snr": s.get('snr'),
+        "domain": s.get('domain'),
+        # "category": s.category,
     } for idx, s in enumerate(samples)])
 
     buf = io.BytesIO()
@@ -233,6 +259,7 @@ async def stream_zip_with_metadata_links(samples, bucket: str, as_excel=True, la
     return z, zip_name
 
 
+
 async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
     import zipstream
     import datetime
@@ -247,11 +274,12 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     # global 
     # # 1. Add audio files into /audio/
     for idx, s in enumerate(samples):
-        audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
-        key = f"{language.lower()}/{category.value if isinstance(category, Enum) else category}/{s.sentence_id}.wav"
-        s3_stream = s3.get_object(Bucket=bucket, Key=key)['Body']
+        audio_filename = f"{zip_folder}/audio/{s.get('sentence_id')}.wav"
+        key = f"{language.lower()}/{category.lower()}/{s.get('sentence_id')}.wav"
+        s3_stream = s3.get_object(Bucket=settings.OBS_BUCKET_NAME, Key=key)['Body']
+        print(f"\nDownloading {audio_filename}", "\n", s3_stream)
         z.write_iter(audio_filename, s3_stream)
-        sentence_id=s.sentence_id
+        sentence_id=s.get('sentence_id')
 
     # 2. Add metadata (Excel or CSV)
     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
@@ -263,56 +291,3 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
     return z, zip_name
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-# def estimate_total_size(samples, bucket, language, category):
-#     total_size = 0
-#     for s in samples:
-#         # key = f"{language.lower()}/{category}/{s.sentence_id}"
-#         key = f"{language.lower()}/{category.value if isinstance(category, Enum) else category}/{s.sentence_id}.wav"
-
-#         try:
-#             head = s3.head_object(Bucket=bucket, Key=key)
-#             total_size += head['ContentLength']
-#         except botocore.exceptions.ClientError as e:
-#             error_code = e.response['Error']['Code']
-#             if error_code == '404':
-#                 print(f"File not found: {key}")
-#             else:
-#                 print(f"Error accessing {key}: {e}")
-#             continue
-#     return total_size

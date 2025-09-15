@@ -3,6 +3,7 @@ import asyncio
 from botocore.exceptions import ClientError
 from enum import Enum
 from src.db.models import Categroy
+from src.config import settings
 
 # Assuming you already have this configured in s3_config.py
 from .s3_config import s3  
@@ -51,14 +52,15 @@ def fetch_audio_bytes(bucket: str, language: str, category: str | Enum, sentence
 
 
 
-from src.download.s3_config import create_presigned_url, BUCKET
+from src.download.s3_config import create_presigned_url
+
 
 async def fetch_audio_stream_galaxy(session, sample, retries=3):
     print(f"Fetching {sample.sentence_id}")
 
     # Build OBS path: e.g. hausa/read/hau_f_HP2F1_PO1_001.wav
     audio_path = f"{sample.language.lower()}/{sample.category}/{sample.sentence_id}.wav"
-    presigned_url = create_presigned_url(audio_path)
+    presigned_url = create_presigned_url(audio_path=audio_path, bucket=settings.OBS_BUCKET_NAME)
 
     for attempt in range(1, retries + 1):
         try:

@@ -1,4 +1,4 @@
-from sqlmodel import Field, SQLModel, Column, Relationship, CheckConstraint
+from sqlmodel import Field, SQLModel, Column, Relationship, CheckConstraint, String, DateTime
 from typing import List, Optional
 from datetime import datetime, timezone
 import sqlalchemy.dialects.postgresql  as pg
@@ -7,6 +7,18 @@ from sqlalchemy.sql import func
 import uuid
 from enum import Enum
 from sqlalchemy import JSON
+from typing import Optional
+
+class Optio(str, Enum):
+    passed = "passed"
+    failed = "failed"
+    pending = "pending"
+
+
+class DownloadStatusEnum(str):
+    PROCESSING = "processing"
+    READY = "ready"
+    FAILED = "failed"
 
 
 class RoleEnum(str, Enum):
@@ -104,7 +116,7 @@ class QAMetadata(SQLModel, table=True):
         )
     )
     audio_id: str = Field(foreign_key="audiosample.id", unique=True)
-    qa_status: str  # 'passed', 'failed', 'pending'
+    qa_status: Optional[Optio] = Field(default=Optio.pending)
     duration_check: bool
     noise_level: str
     label_match: bool
@@ -129,18 +141,47 @@ class Dataset(SQLModel, table=True):
 
 
 class DownloadLog(SQLModel, table=True):
+    __tablename__ = "download_logs"
+
+    # Unique request ID
     id: str = Field(
-        sa_column=Column(
-            pg.VARCHAR,
-            nullable=False,
-            primary_key=True,
-            default= lambda: str(uuid.uuid4())
-        )
+        default_factory=lambda: str(uuid.uuid4()), 
+        primary_key=True, 
+        index=True
     )
-    user_id: str = Field(foreign_key="users.id")
-    dataset_id: str = Field(foreign_key="dataset.id")
-    percentage: int  # from {5,20,40,60,80,100}
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+    # User who triggered the download
+    user_id: str = Field(index=True)
+
+    # Dataset reference (if applicable)
+    dataset_id: Optional[str] = Field(default=None, index=True)
+
+    # Percentage requested
+    percentage: float = Field()
+
+    # Status of the job
+    status: str = Field(
+        default=DownloadStatusEnum.PROCESSING, 
+        sa_column=Column(String, index=True)
+    )
+
+    # Presigned S3 download link (set when job is ready)
+    download_url: Optional[str] = Field(default=None)
+
+    # Optional error message if job fails
+    error_message: Optional[str] = Field(default=None)
+
+    # Created and updated timestamps
+    created_at: Optional[str] = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
+    updated_at: Optional[str] = Field(
+        sa_column=Column(DateTime(timezone=True), onupdate=func.now())
+    )
+
+
+
+
 
 
 # User feedback. The feedback should be a list
