@@ -16,25 +16,36 @@ download_service = DownloadService(
 )
 
 
-def map_all_to_none(value: str | None, language: str | None = None) -> str | None:
+from typing import Optional
+
+def map_all_to_none(value: Optional[str], language: Optional[str] = None) -> Optional[str]:
     if not value:
         return None
 
     val = value.lower()
     lang = (language or "").lower()
 
-    print(f"Mapping value: {val} for language: {lang}")
-
     if val == "all":
         return None
+
     if val == "read":
-        if lang not in ["hausa", "igbo", "yoruba"]:
+        if lang == "naija":
+            print(f"Mapping the category {val} to read")
             return "read"
-        return "read_with_spontaneous"
-    if val == "read_as_spontaneous":
-        return "read_with_spontaneous"
-    if val == "spontaneous":
-        return "read_with_spontaneous"
+        if lang in ["igbo", "yoruba", "hausa"]:
+            print(f"Mapping the category {val} to read_with_spontaneous")
+            return "read_with_spontaneous"
+
+    if val in ["read_as_spontaneous", "spontaneous"]:
+        if val == "read_as_spontaneous":
+            print(f"Mapping the category {val} to read_with_spontaneous")
+            return "read_with_spontaneous"
+        if lang in ["naija", "igbo", "yoruba"]:
+            return "spontaneous"
+        if lang == "hausa":
+            print(f"Mapping the category {val} to read_with_spontaneous")
+            return "read_with_spontaneous"
+
     return val
 
 
@@ -73,13 +84,13 @@ async def preview_audio_samples(
     age = map_all_to_none(age)
     education = map_all_to_none(education)
     domain = map_EV_to_EV(domain, language)
-    category = map_all_to_none(category)
+    category = map_all_to_none(category, language)
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
 
-    print("The category is: ", category)
 
+    print("This is the category after the mapping: ", category)
     return await download_service.preview_audio_samples(
         session=session, 
         language=language, 
@@ -108,12 +119,12 @@ async def estimate_zip_size(
     age = map_all_to_none(age)
     education = map_all_to_none(education)
     domain = map_EV_to_EV(domain, language)
-    category = map_all_to_none(category)
+    category = map_all_to_none(category, language)
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
 
-    print("The category is: ", category)
+    print("This is the category after the mapping: ", category)
 
     return await download_service.estimate_zip_size_only(
         session=session,
@@ -149,7 +160,7 @@ async def download_zip(
     age = map_all_to_none(age)
     education = map_all_to_none(education)
     domain = map_EV_to_EV(domain, language)
-    category = map_all_to_none(category)
+    category = map_all_to_none(category, language)
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None

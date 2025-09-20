@@ -7,7 +7,6 @@ from src.db.models import DownloadLog
 from src.db.db import get_session, get_sync_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.config import settings
-from src.download.utils import fetch_subset
 import requests
 from src.download.s3_config import BUCKET_AWS
 
@@ -15,15 +14,20 @@ celery = Celery("worker", broker="redis://localhost:6379/0")
 s3 = boto3.client("s3")
 
 
+
+
+
 @celery.task
 def create_dataset_zip_s3(
     request_id, language, pct, category, gender, age_group, education, domain, as_excel
 ):
+    from src.download.service import DownloadService
+    download_service = DownloadService(s3_bucket_name=BUCKET_AWS)
     session: AsyncSession = get_session()
     db: Session = get_sync_session()
     try:
         # 1. Get subset
-        samples = run_async(fetch_subset(
+        samples = run_async(download_service.filter_core(
             session=session,
             language=language,
             category=category,
@@ -133,11 +137,13 @@ def create_dataset_zip_s3(
 def create_dataset_zip_gcp(
     request_id, language, pct, category, gender, age_group, education, domain, as_excel
 ):
+    from src.download.service import DownloadService
+    download_service = DownloadService(s3_bucket_name=settings.S3_BUCKET_NAME)
     session: AsyncSession = get_session()
     db: Session = get_sync_session()
     try:
         # 1. Get subset
-        samples = run_async(fetch_subset(
+        samples = run_async(download_service.filter_core(
             session=session,
             language=language,
             category=category,

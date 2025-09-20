@@ -113,6 +113,6 @@ def map_sentence_id_to_transcript_obs(sentence_id: str, language: Optional[str] 
             filename=f"{sentence_id}.docx",
         )
         print("This is the transcript URL for OBS:", transcript_url_obs)
-        print("The category is:", category)
+        print("The category is from map_sentence_id_to_transcript_obs:", category)
         return transcript_url_obs
     return sentence
