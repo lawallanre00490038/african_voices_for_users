@@ -28,23 +28,23 @@ from src.config import settings
 semaphore = asyncio.Semaphore(5)
 
 async def fetch_audio_stream(session, sample, retries=3):
-    print(f"Fetching {sample.get('sentence_id')}")
+    print(f"Fetching {sample.sentence_id}")
     for attempt in range(1, retries + 1):
         try:
-            async with session.get(sample.get('storage_link'), timeout=10) as resp:
+            async with session.get(sample.storage_link, timeout=10) as resp:
                 if resp.status == 200:
                     audio_data = bytearray()
                     async for chunk in resp.content.iter_chunked(1024):
                         audio_data.extend(chunk)
-                    print(f"✅ Fetched {sample.get('sentence_id')}")
-                    return sample.get('sentence_id'), bytes(audio_data)
+                    print(f"✅ Fetched {sample.sentence_id}")
+                    return sample.sentence_id, bytes(audio_data)
                 else:
-                    print(f"❌ Non-200 status for {sample.get('sentence_id')}: {resp.status}")
+                    print(f"❌ Non-200 status for {sample.sentence_id}: {resp.status}")
         except Exception as e:
-            print(f"[Attempt {attempt}] Error streaming {sample.get('sentence_id')}: {e}")
+            print(f"[Attempt {attempt}] Error streaming {sample.sentence_id}: {e}")
             await asyncio.sleep(2 ** attempt)  # exponential backoff
-    print(f"❌ Failed to fetch {sample.get('sentence_id')} after {retries} attempts")
-    return sample.get('sentence_id'), None
+    print(f"❌ Failed to fetch {sample.sentence_id} after {retries} attempts")
+    return sample.sentence_id, None
 
 
 async def fetch_audio_limited(session, sample):
@@ -61,88 +61,88 @@ async def fetch_all(samples):
 # =========================================================================
 
 
-async def fetch_subset(
-    session: AsyncSession, 
-    language: str, 
-    pct: int | float,
+# async def fetch_subset(
+#     session: AsyncSession, 
+#     language: str, 
+#     pct: int | float,
 
-    category: str | None = Category.read_with_spontaneous,
-    gender: str | None = None,
-    age_group: str | None = None,
-    education: str | None = None,
-    domain: str | None = None,
+#     category: str | None = Category.read_with_spontaneous,
+#     gender: str | None = None,
+#     age_group: str | None = None,
+#     education: str | None = None,
+#     domain: str | None = None,
         
-    ):
-    # Count total number of samples
-    if language not in SUPPORTED_LANGUAGES:
-            raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
+#     ):
+#     # Count total number of samples
+#     if language not in SUPPORTED_LANGUAGES:
+#             raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
 
-    filters = [AudioSample.language == language]
+#     filters = [AudioSample.language == language]
 
-    if gender:
-        filters.append(AudioSample.gender == gender)
-    if category:
-        filters.append(AudioSample.category == category)
-    if age_group:
-        filters.append(AudioSample.age_group == age_group)
-    if education:
-        filters.append(AudioSample.edu_level == education)
-    if domain:
-        filters.append(AudioSample.domain == domain)
+#     if gender:
+#         filters.append(AudioSample.gender == gender)
+#     if category:
+#         filters.append(AudioSample.category == category)
+#     if age_group:
+#         filters.append(AudioSample.age_group == age_group)
+#     if education:
+#         filters.append(AudioSample.edu_level == education)
+#     if domain:
+#         filters.append(AudioSample.domain == domain)
 
-    total_stmt = select(func.count()).select_from(AudioSample).where(and_(*filters))
-    total_result = await session.execute(total_stmt)
-    total = total_result.scalar_one()
+#     total_stmt = select(func.count()).select_from(AudioSample).where(and_(*filters))
+#     total_result = await session.execute(total_stmt)
+#     total = total_result.scalar_one()
 
-    print(f"Total samples for {language}: {total}")
+#     print(f"Total samples for {language}: {total}")
 
-    if total == 0:
-        return []
+#     if total == 0:
+#         return []
 
-    count = max(1, int(floor(total * pct / 100)))
+#     count = max(1, int(floor(total * pct / 100)))
 
-    stmt = (
-        select(AudioSample)
-        .where(and_(*filters))
-        .order_by(AudioSample.id)
-        .limit(count)
-    )
-    result = await session.execute(stmt)
-    response = result.scalars().all()
+#     stmt = (
+#         select(AudioSample)
+#         .where(and_(*filters))
+#         .order_by(AudioSample.id)
+#         .limit(count)
+#     )
+#     result = await session.execute(stmt)
+#     response = result.scalars().all()
 
-    if not response:
-        raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
+#     if not response:
+#         raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
     
-    urls = [
-        {
-            "id": str(s.id),
-            "annotator_id": s.annotator_id,
-            "sentence_id": s.sentence_id,
-            "sentence": s.sentence,
-            "storage_link": s.storage_link,
-            "gender": s.gender,
-            "audio_url_obs": generate_obs_signed_url(
-                language=s.language.lower(),
-                category=s.category,
-                filename=f"{s.sentence_id}.wav",
-                storage_link=s.storage_link,
-            ),
-            "transcript_url_obs": map_sentence_id_to_transcript_obs(s.sentence_id, s.language, s.category, s.sentence),
-            "age_group": s.age_group,
-            "edu_level": s.edu_level,
-            "durations": s.durations,
-            "language": s.language,
-            "edu_level": s.edu_level,
-            "snr": s.snr,
-            "domain": s.domain,
-            "category": s.category,
+#     urls = [
+#         {
+#             "id": str(s.id),
+#             "annotator_id": s.annotator_id,
+#             "sentence_id": s.sentence_id,
+#             "sentence": s.sentence,
+#             "storage_link": s.storage_link,
+#             "gender": s.gender,
+#             "audio_url_obs": generate_obs_signed_url(
+#                 language=s.language.lower(),
+#                 category=s.category,
+#                 filename=f"{s.sentence_id}.wav",
+#                 storage_link=s.storage_link,
+#             ),
+#             "transcript_url_obs": map_sentence_id_to_transcript_obs(s.sentence_id, s.language, s.category, s.sentence),
+#             "age_group": s.age_group,
+#             "edu_level": s.edu_level,
+#             "durations": s.durations,
+#             "language": s.language,
+#             "edu_level": s.edu_level,
+#             "snr": s.snr,
+#             "domain": s.domain,
+#             "category": s.category,
 
-        }
+#         }
         
-        for s in response
-    ]
-    print(response)
-    return urls
+#         for s in response
+#     ]
+#     print(response)
+#     return urls
 
 
 
@@ -166,18 +166,18 @@ async def estimate_total_size(urls):
 def generate_metadata_buffer(samples, as_excel=True):
     """Create metadata buffer in either Excel or CSV."""
     df = pd.DataFrame([{
-        "speaker_id": s.get('annotator_id'),
-        "transcript_id": s.get('sentence_id'),
-        "transcript": s.get('sentence') or "",
-        "audio_path": f"audio/{s.get('sentence_id')}.wav",
-        "gender": s.get('gender'),
-        "age_group": s.get('age_group'),
-        "edu_level": s.get('edu_level'),
-        "durations": s.get('durations'),
-        "language": s.get('language'),
-        "edu_level": s.get('edu_level'),
-        "snr": s.get('snr'),
-        "domain": s.get('domain'),
+        "speaker_id": s.annotator_id,
+        "transcript_id": s.sentence_id,
+        "transcript": s.sentence or "",
+        "audio_path": f"audio/{s.sentence_id}.wav",
+        "gender": s.gender,
+        "age_group": s.age_group,
+        "edu_level": s.edu_level,
+        "durations": s.durations,
+        "language": s.language,
+        "edu_level": s.edu_level,
+        "snr": s.snr,
+        "domain": s.domain,
         # "category": s.category,
     } for idx, s in enumerate(samples)])
 
@@ -240,7 +240,7 @@ async def stream_zip_with_metadata_links(samples, bucket: str, as_excel=True, la
     print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
 
     valid_ids = {sid for sid, _ in valid_results}
-    filtered_samples = [s for s in samples if s.get('sentence_id') in valid_ids]
+    filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
 
     z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
     
@@ -274,18 +274,18 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     # global 
     # # 1. Add audio files into /audio/
     for idx, s in enumerate(samples):
-        audio_filename = f"{zip_folder}/audio/{s.get('sentence_id')}.wav"
+        audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
         print("the language is: ", language, "\n\n")
         print("the category is: ", category, "\n\n")
 
-        category = s.get('category') or "read_with_spontaneous"
+        category = s.category or "read_with_spontaneous"
 
-        key = f"{language.lower()}/{category.lower()}/{s.get('sentence_id')}.wav"
+        key = f"{language.lower()}/{category.lower()}/{s.sentence_id}.wav"
         print(f"\nDownloading {audio_filename}", "\n", key)
         s3_stream = s3.get_object(Bucket=settings.OBS_BUCKET_NAME, Key=key)['Body']
         print(f"\nDownloading {audio_filename}", "\n", s3_stream)
         z.write_iter(audio_filename, s3_stream)
-        sentence_id=s.get('sentence_id')
+        sentence_id=s.sentence_id
 
     # 2. Add metadata (Excel or CSV)
     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
@@ -297,3 +297,62 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
     z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
 
     return z, zip_name
+
+
+
+
+
+import aiohttp
+import tempfile
+import datetime
+import io
+import zipfile
+
+async def prepare_zip_file(samples, language="hausa", pct=10, as_excel=True):
+    today = datetime.datetime.now().strftime("%Y-%m-%d")
+    zip_folder = f"{language}_{pct}pct_{today}"
+    zip_name = f"{zip_folder}_dataset.zip"
+
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
+    tmp.close()
+
+    with zipfile.ZipFile(tmp.name, "w", zipfile.ZIP_DEFLATED) as z:
+        async with aiohttp.ClientSession() as session:
+            for s in samples:
+                if not getattr(s, "storage_link", None):
+                    continue
+
+                audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
+                print(f"Downloading {audio_filename}")
+
+                try:
+                    async with session.get(s.storage_link) as resp:
+                        if resp.status == 200:
+                            # Stream to a temp file first (not memory)
+                            with tempfile.NamedTemporaryFile(delete=False) as tmp_audio:
+                                async for chunk in resp.content.iter_chunked(8192):
+                                    tmp_audio.write(chunk)
+                                tmp_audio_path = tmp_audio.name
+
+                            # Now add to zip from file
+                            z.write(tmp_audio_path, audio_filename)
+                            print(f"✅ Added {audio_filename}")
+
+                            # ✅ Cleanup temp file immediately
+                            os.remove(tmp_audio_path)
+                        else:
+                            print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
+                except Exception as e:
+                    print(f"❌ Error fetching {s.sentence_id}: {e}")
+
+        # Add metadata
+        metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+        metadata_buf.seek(0)
+        z.writestr(f"{zip_folder}/{metadata_filename}", metadata_buf.read())
+
+        # Add README
+        last_id = samples[-1].sentence_id if samples else None
+        readme_text = generate_readme(language, pct, as_excel, len(samples), last_id)
+        z.writestr(f"{zip_folder}/README.txt", readme_text)
+
+    return tmp.name, zip_name
