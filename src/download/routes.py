@@ -36,16 +36,17 @@ def map_all_to_none(value: Optional[str], language: Optional[str] = None) -> Opt
             print(f"Mapping the category {val} to read_with_spontaneous")
             return "read_with_spontaneous"
 
-    if val in ["read_as_spontaneous", "spontaneous"]:
-        if val == "read_as_spontaneous":
-            print(f"Mapping the category {val} to read_with_spontaneous")
-            return "read_with_spontaneous"
+    if val == "spontaneous":
         if lang in ["naija", "igbo", "yoruba"]:
             return "spontaneous"
         if lang == "hausa":
             print(f"Mapping the category {val} to read_with_spontaneous")
             return "read_with_spontaneous"
+        return "read_with_spontaneous"
 
+    if val == "read_as_spontaneous":
+        if lang in ["naija", "igbo", "yoruba", "hausa"]:
+            return "read_with_spontaneous"
     return val
 
 
@@ -164,6 +165,8 @@ async def download_zip(
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
+
+    print("This is the category after the mapping: ", category)
 
     return await download_service.download_zip_with_metadata(
         language=language, 
