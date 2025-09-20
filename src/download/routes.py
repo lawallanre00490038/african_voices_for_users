@@ -12,7 +12,7 @@ from src.config import settings
 
 download_router = APIRouter()
 download_service = DownloadService(
-    s3_bucket_name=settings.OBS_BUCKET_NAME
+    s3_bucket_name=settings.S3_BUCKET_NAME
 )
 
 
@@ -125,7 +125,7 @@ async def estimate_zip_size(
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
 
-    print("This is the category after the mapping: ", category)
+    print("This is the category after the mapping: ", category, language)
 
     return await download_service.estimate_zip_size_only(
         session=session,
@@ -140,7 +140,9 @@ async def estimate_zip_size(
     )
 
 
-@download_router.get("/zip/{language}/{pct}", response_class=StreamingResponse)
+
+# , response_class=StreamingResponse
+@download_router.get("/zip/{language}/{pct}", response_model=dict)
 async def download_zip(
     language: str,
     background_tasks: BackgroundTasks,
@@ -166,9 +168,9 @@ async def download_zip(
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
 
-    print("This is the category after the mapping: ", category)
+    print("This is the category after the mapping: ", category, language)
 
-    return await download_service.download_zip_with_metadata(
+    return await download_service.download_zip_with_metadata_s3(
         language=language, 
         pct=pct, 
         session=session, 
