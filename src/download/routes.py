@@ -29,10 +29,10 @@ def map_all_to_none(value: Optional[str], language: Optional[str] = None) -> Opt
         return None
 
     if val == "read":
-        if lang == "naija":
-            print(f"Mapping the category {val} to read")
-            return "read"
-        if lang in ["igbo", "yoruba", "hausa"]:
+        # if lang == "naija":
+        #     print(f"Mapping the category {val} to read")
+        #     return "read"
+        if lang in ["igbo", "yoruba", "hausa", "naija"]:
             print(f"Mapping the category {val} to read_with_spontaneous")
             return "read_with_spontaneous"
 

@@ -1,30 +1,34 @@
 from fastapi import HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse, FileResponse
 from sqlmodel import select, and_
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
+from src.db.db import get_session, get_sync_session
+from typing import List, Optional
+import os, uuid, math, datetime, zipfile, aiohttp, boto3, botocore
+from botocore.exceptions import NoCredentialsError
+import zipstream, aiohttp, datetime, tempfile
+from botocore.exceptions import BotoCoreError
+import io
 from src.db.models import AudioSample, DownloadLog, Category, GenderEnum
 from src.auth.schemas import TokenUser
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.download.s3_config import  SUPPORTED_LANGUAGES
 from src.config import settings
-from src.download.utils import stream_zip_with_metadata, estimate_total_size, stream_zip_with_metadata_links, prepare_zip_file
-from src.download.s3_config import generate_obs_signed_url, map_sentence_id_to_transcript_obs
-from typing import List, Optional
+from src.download.s3_config import (
+    SUPPORTED_LANGUAGES,
+    generate_obs_signed_url,
+    map_sentence_id_to_transcript_obs,
+    s3_aws,
+)
+from src.download.utils import (
+    stream_zip_with_metadata,
+    estimate_total_size,
+    stream_zip_with_metadata_links,
+    prepare_zip_file,
+    generate_metadata_buffer,
+    generate_readme,
+)
 from src.download.tasks import create_dataset_zip_gcp
-import uuid, math
-
-
-
-import os
-import boto3
-from fastapi import HTTPException
-from fastapi import BackgroundTasks
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.db.models import DownloadLog, GenderEnum
-from botocore.exceptions import NoCredentialsError
-from src.auth.schemas import TokenUser
-from src.config import settings
-from src.download.s3_config import s3_aws
-from src.download.utils import prepare_zip_file
+import aioboto3
 
 
 def upload_to_s3(local_path: str, bucket_name: str, object_name: str):
@@ -270,22 +274,132 @@ class DownloadService:
         )
 
 
+
+
+    # async def download_zip_with_metadata_s3(
+    #     self,
+    #     language: str, 
+    #     pct: int | float, 
+
+    #     session: AsyncSession, 
+    #     background_tasks: BackgroundTasks, 
+    #     current_user: TokenUser,
+
+    #     category: str = None,
+    #     gender: GenderEnum | None = None,
+    #     age_group: str | None = None,
+    #     education: str | None = None,
+    #     domain: str | None = None,
+
+    #     as_excel: bool = True,
+    # ):
+
+    #     samples, total = await self.filter_core(
+    #         session=session, 
+    #         language=language,
+    #         category=category,
+    #         gender=gender,
+    #         age_group=age_group,
+    #         education=education,
+    #         domain=domain,
+    #         pct=pct
+    #     )
+
+    #     if samples:
+    #         print("the total number of samples is ", total)
+    #         print("the samples are ", samples[0])
+
+    #     if not samples:
+    #         raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
+    #     background_tasks.add_task(
+    #         session.add,
+    #         DownloadLog(
+    #             user_id=current_user.id,
+    #             dataset_id=samples[0].dataset_id,
+    #             percentage=pct,
+    #         ),
+    #     )
+    #     await session.commit() 
+
+    #     if not samples:
+    #         raise HTTPException(404, "No audio samples found.")
+
+    #     today = datetime.datetime.now().strftime("%Y-%m-%d")
+    #     zip_folder = f"{language}_{pct}pct_{today}"
+    #     zip_name = f"{zip_folder}_dataset.zip"
+    #     object_key = f"exports/{zip_name}"
+
+    #     # Stream directly into memory buffer
+    #     buffer = io.BytesIO()
+
+    #     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as z:
+    #         async with aiohttp.ClientSession() as session:
+    #             for s in samples:
+    #                 if not getattr(s, "storage_link", None):
+    #                     continue
+
+    #                 audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
+    #                 print(f"Downloading {audio_filename}")
+
+    #                 try:
+    #                     async with session.get(s.storage_link) as resp:
+    #                         if resp.status == 200:
+    #                             audio_bytes = await resp.read()
+    #                             z.writestr(audio_filename, audio_bytes)
+    #                             print(f"The request is {resp}")
+    #                             print(f"The storage link is {s.storage_link}")
+    #                             print(f"✅ Added {audio_filename}")
+    #                         else:
+    #                             print(f"The storage link is {s.storage_link}")
+    #                             print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
+    #                 except Exception as e:
+    #                     print(f"❌ Error fetching {s.sentence_id}: {e}")
+
+    #         # Add metadata
+    #         metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+    #         metadata_buf.seek(0)
+    #         z.writestr(f"{zip_folder}/{metadata_filename}", metadata_buf.read())
+
+    #         # Add README
+    #         last_id = samples[-1].sentence_id if samples else None
+    #         readme_text = generate_readme(language, pct, as_excel, len(samples), last_id)
+    #         z.writestr(f"{zip_folder}/README.txt", readme_text)
+
+    #     # Upload to S3 (buffer → S3 directly)
+    #     buffer.seek(0)
+    #     self.s3.upload_fileobj(buffer, self.bucket, object_key)
+
+    #     # Generate pre-signed URL
+    #     signed_url = self.s3.generate_presigned_url(
+    #         "get_object",
+    #         Params={"Bucket": self.bucket, "Key": object_key},
+    #         ExpiresIn=3600,  # 1 hour
+    #     )
+
+    #     print(f"✅ Uploaded to s3://{self.bucket}/{object_key}")
+    #     print(f"🔗 Signed URL: {signed_url}")
+    #     return {"download_url": signed_url}
+
+
+
+
     async def download_zip_with_metadata_s3(
-        self, 
-        language: str, 
-        pct: int | float, 
-        session: AsyncSession, 
-        background_tasks: BackgroundTasks, 
+        self,
+        language: str,
+        pct: int | float,
+        session: AsyncSession,
+        background_tasks: BackgroundTasks,
         current_user: TokenUser,
         category: str = None,
         gender: GenderEnum | None = None,
         age_group: str | None = None,
         education: str | None = None,
         domain: str | None = None,
-        as_excel: bool = True
+        as_excel: bool = True,
     ):
-        samples, _ = await self.filter_core(
-            session=session, 
+        # 1. Fetch samples
+        samples, total = await self.filter_core(
+            session=session,
             language=language,
             category=category,
             gender=gender,
@@ -296,9 +410,10 @@ class DownloadService:
         )
 
         if not samples:
-            raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
+            raise HTTPException(404, "No audio samples found for selected filters")
 
-        # Log download in background
+        print("the total number of samples is ", total)
+        # 2. Log download
         background_tasks.add_task(
             session.add,
             DownloadLog(
@@ -307,30 +422,85 @@ class DownloadService:
                 percentage=pct,
             ),
         )
-        await session.commit() 
+        await session.commit()
 
+        # 3. Prepare ZIP stream
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        zip_folder = f"{language}_{pct}pct_{today}"
+        zip_name = f"{zip_folder}_dataset.zip"
+        object_key = f"exports/{zip_name}"
+
+        zs = zipstream.ZipFile(mode='w', compression=zipstream.ZIP_DEFLATED)
+
+        async with aiohttp.ClientSession() as http_session:
+            for s in samples:
+                if not getattr(s, "storage_link", None):
+                    continue
+
+                audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
+
+                # Convert async audio generator to bytes
+                audio_bytes = b""
+                try:
+                    async with http_session.get(s.storage_link) as resp:
+                        if resp.status == 200:
+                            while True:
+                                chunk = await resp.content.read(1024 * 1024)
+                                if not chunk:
+                                    break
+                                audio_bytes += chunk
+                                print(f"✅ Added {audio_filename}")
+                        else:
+                            print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
+                            continue
+                except Exception as e:
+                    print(f"❌ Error fetching {s.sentence_id}: {e}")
+                    continue
+
+                zs.write_iter(audio_filename, iter([audio_bytes]))
+
+        # Add metadata
+        metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
+        metadata_buf.seek(0)
+        zs.write_iter(f"{zip_folder}/{metadata_filename}", iter([metadata_buf.read()]))
+
+        # Add README
+        last_id = samples[-1].sentence_id if samples else None
+        readme_text = generate_readme(language, pct, as_excel, len(samples), last_id)
+        zs.write_iter(f"{zip_folder}/README.txt", iter([readme_text.encode()]))
+
+        # 4. Write ZIP to temporary file and upload
+        session_aioboto = aioboto3.Session()
         try:
-            # Build local ZIP
-            zip_path, zip_name = await prepare_zip_file(samples, language=language, pct=pct, as_excel=as_excel)
+            with tempfile.NamedTemporaryFile() as tmp:
+                for chunk in zs:
+                    tmp.write(chunk)
+                tmp.seek(0)
 
-            # Upload to S3
-            object_key = f"exports/{zip_name}"
-            signed_url = upload_to_s3(zip_path, self.s3_bucket_name, object_key)
+                async with session_aioboto.client(
+                    "s3",
+                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    region_name=settings.AWS_REGION,
+                    endpoint_url=settings.AWS_ENDPOINT_URL
+                ) as s3_client:
+                    await s3_client.upload_fileobj(
+                        Fileobj=tmp,
+                        Bucket=self.s3_bucket_name,
+                        Key=object_key
+                    )
 
-            # Cleanup local temp file
-            try:
-                os.remove(zip_path)
-                print(f"🧹 Cleaned up {zip_path}")
-            except Exception as e:
-                print(f"⚠️ Failed to remove temp zip {zip_path}: {e}")
-            
-            print(f"✅ Uploaded {zip_path} to s3://{self.s3_bucket_name}/{object_key}")
-            print(f"🔗 Signed URL: {signed_url}")
-            return {"download_url": signed_url}
-
+                    # Generate presigned URL
+                    signed_url = await s3_client.generate_presigned_url(
+                        ClientMethod="get_object",
+                        Params={"Bucket": self.s3_bucket_name, "Key": object_key},
+                        ExpiresIn=3600
+                    )
+                    print(f"✅ Uploaded to s3://{self.s3_bucket_name}/{object_key}")
         except Exception as e:
-            raise HTTPException(500, f"Failed to generate ZIP: {e}")
+            raise HTTPException(500, f"Failed to upload to S3: {e}")
 
+        return {"download_url": signed_url}
 
 
 
