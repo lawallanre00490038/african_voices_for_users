@@ -1,3 +1,4 @@
+from ast import Not
 from fastapi import APIRouter, Depends, BackgroundTasks, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import StreamingResponse
@@ -21,34 +22,20 @@ from typing import Optional
 def map_all_to_none(value: Optional[str], language: Optional[str] = None) -> Optional[str]:
     if not value:
         return None
-
     val = value.lower()
-    lang = (language or "").lower()
+    lang = language.lower()
 
     if val == "all":
         return None
 
+    # For value and language going into DB
     if val == "read":
-        # if lang == "naija":
-        #     print(f"Mapping the category {val} to read")
-        #     return "read"
-        if lang in ["igbo", "yoruba", "hausa", "naija"]:
-            print(f"Mapping the category {val} to read_with_spontaneous")
-            return "read_with_spontaneous"
-
-    if val == "spontaneous":
-        if lang in ["naija", "igbo", "yoruba"]:
+        if lang in ["yoruba"]:
+            print(f"Mapping the category {val} to spontaneous")
             return "spontaneous"
-        if lang == "hausa":
-            print(f"Mapping the category {val} to read_with_spontaneous")
-            return "read_with_spontaneous"
-        return "read_with_spontaneous"
-
-    if val == "read_as_spontaneous":
-        if lang in ["naija", "igbo", "yoruba", "hausa"]:
-            return "read_with_spontaneous"
+    
+    print(f"This is the language coming from the backend")
     return val
-
 
 
 def map_EV_to_EV(category: str | None, language: str | None = None) -> str | None:
@@ -78,20 +65,22 @@ async def preview_audio_samples(
     education: str | None = Query(None),
     domain: str | None = Query(None),
     category: str | None = Query(None),
+    split: str | None = Query(None),
 
     session: AsyncSession = Depends(get_session),
 ):
-    gender = map_all_to_none(gender)
-    age = map_all_to_none(age)
-    education = map_all_to_none(education)
+    gender = map_all_to_none(value=gender)
+    age = map_all_to_none(value=age)
+    education = map_all_to_none(value=education)
     domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category, language)
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
+    language = language.lower()
 
 
-    print("This is the category after the mapping: ", category)
+    print("This is the category and language after the mapping: ", category, language, "\n\n")
     return await download_service.preview_audio_samples(
         session=session, 
         language=language, 
@@ -99,6 +88,7 @@ async def preview_audio_samples(
         gender=gender, 
         age_group=age, 
         education=education, 
+        split=split,
         domain=domain, 
         category=category
     )
@@ -113,17 +103,19 @@ async def estimate_zip_size(
     education: str | None = Query(None),
     domain: str | None = Query(None),
     category: str | None = Query(None),
+    split: str | None = Query(None),
     session: AsyncSession = Depends(get_session),
 ):
 
-    gender = map_all_to_none(gender)
-    age = map_all_to_none(age)
-    education = map_all_to_none(education)
+    gender = map_all_to_none(value=gender)
+    age = map_all_to_none(value=age)
+    education = map_all_to_none(value=education)
     domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category, language)
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
+    language = language.lower()
 
     print("This is the category after the mapping: ", category, language)
 
@@ -135,6 +127,7 @@ async def estimate_zip_size(
         gender=gender,
         age_group=age,
         education=education,
+        split=split,
         domain=domain,
         
     )
@@ -153,20 +146,22 @@ async def download_zip(
     education: str | None = Query(None),
     domain: str | None = Query(None),
     category: str | None = Query(None),
+    split: str | None = Query(None),
     
     as_excel: bool = True,
     current_user: TokenUser = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
 
-    gender = map_all_to_none(gender)
-    age = map_all_to_none(age)
-    education = map_all_to_none(education)
+    gender = map_all_to_none(value=gender)
+    age = map_all_to_none(value=age)
+    education = map_all_to_none(value=education)
     domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category, language)
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
+    language = language.lower()
 
     print("This is the category after the mapping: ", category, language)
 
@@ -180,56 +175,8 @@ async def download_zip(
         gender=gender, 
         age_group=age, 
         education=education, 
+        split=split,
         domain=domain, 
         category=category
     )
 
-
-
-
-
-
-
-
-
-@download_router.post("/zip/{language}/{pct}/celery", include_in_schema=False)
-async def start_download(
-    language: str,
-    pct: int | float,
-    current_user: TokenUser = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session),
-    gender: str | None = Query(None),
-    age: str | None = Query(None),
-    education: str | None = Query(None),
-    domain: str | None = Query(None),
-    category: str | None = Query(None),
-    as_excel: bool = True,
-):
-
-    gender = map_all_to_none(gender)
-    age = map_all_to_none(age)
-    education = map_all_to_none(education)
-    domain = map_EV_to_EV(domain, language)
-    category = map_all_to_none(category)
-
-    gender = GenderEnum(gender) if gender else None
-    category = Category(category) if category else None
-
-    
-    return await download_service.start_zip_job(
-        session=session,
-        language=language,
-        pct=pct,
-        current_user=current_user,
-        gender=gender,
-        age_group=age,
-        education=education,
-        domain=domain,
-        category=category,
-        as_excel=as_excel,
-    )
-
-
-@download_router.get("/zip/status/{request_id}", include_in_schema=False)
-async def get_zip_status(request_id: str, session: AsyncSession = Depends(get_session)):
-    return await download_service.get_zip_status(session, request_id)

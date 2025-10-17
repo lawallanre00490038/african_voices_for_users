@@ -1,34 +1,35 @@
+from re import split
 from fastapi import HTTPException, BackgroundTasks
-from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.responses import StreamingResponse
 from sqlmodel import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
-from src.db.db import get_session, get_sync_session
-from typing import List, Optional
-import os, uuid, math, datetime, zipfile, aiohttp, boto3, botocore
+from typing import List, Optional, Tuple
+import math
 from botocore.exceptions import NoCredentialsError
-import zipstream, aiohttp, datetime, tempfile
-from botocore.exceptions import BotoCoreError
-import io
-from src.db.models import AudioSample, DownloadLog, Category, GenderEnum
+from sqlalchemy import select, and_, func
+from sqlalchemy.ext.asyncio import AsyncScalarResult
+
+from src.db.models import AudioSample, DownloadLog, GenderEnum
 from src.auth.schemas import TokenUser
 from src.config import settings
 from src.download.s3_config import (
     SUPPORTED_LANGUAGES,
     generate_obs_signed_url,
-    map_sentence_id_to_transcript_obs,
     s3_aws,
 )
 from src.download.utils import (
     stream_zip_with_metadata,
-    estimate_total_size,
-    stream_zip_with_metadata_links,
-    prepare_zip_file,
     generate_metadata_buffer,
     generate_readme,
+    stream_zip_to_s3,
 )
-from src.download.tasks import create_dataset_zip_gcp
 import aioboto3
+
+
+AUDIO_SAMPLE_RATE = 48000  # Hz
+AUDIO_BIT_DEPTH = 16       # bits
+AUDIO_CHANNELS = 1         # mono
+COMPRESSION_RATIO = 0.65 
 
 
 def upload_to_s3(local_path: str, bucket_name: str, object_name: str):
@@ -65,6 +66,7 @@ class DownloadService:
         gender: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
+        split: str | None = None,
         domain: str | None = None,
     ):
         samples, _ = await self.filter_core(
@@ -75,13 +77,16 @@ class DownloadService:
             gender=gender,
             age_group=age_group,
             education=education,
+            split=split,
             domain=domain,
         )
+
+
 
         urls = [
             {
                 "id": str(s.id),
-                "annotator_id": s.annotator_id,
+                "annotator_id": s.speaker_id,
                 "sentence_id": s.sentence_id,
                 "sentence": s.sentence,
                 "storage_link": s.storage_link,
@@ -92,10 +97,10 @@ class DownloadService:
                     filename=f"{s.sentence_id}.wav",
                     storage_link=s.storage_link,
                 ),
-                "transcript_url_obs": map_sentence_id_to_transcript_obs(s.sentence_id, s.language, s.category, s.sentence),
+                # "transcript_url_obs": map_sentence_id_to_transcript_obs(s.sentence_id, s.language, s.category, s.sentence),
                 "age_group": s.age_group,
                 "edu_level": s.edu_level,
-                "durations": s.durations,
+                "durations": s.duration,
                 "language": s.language,
                 "edu_level": s.edu_level,
                 "snr": s.snr,
@@ -110,6 +115,10 @@ class DownloadService:
             "samples": urls
         }
 
+
+
+
+
     async def filter_core(
         self,
         session: AsyncSession,
@@ -120,25 +129,33 @@ class DownloadService:
         gender: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
+        split: str | None = None,
         domain: str | None = None,
     ):
         filters = [AudioSample.language == language]
-        
-        if gender:
-            filters.append(AudioSample.gender == gender)
-        if category:
-            filters.append(AudioSample.category == category)
-        if age_group:
-            filters.append(AudioSample.age_group == age_group)
-        if education:
-            filters.append(AudioSample.edu_level == education)
-        if domain:
-            filters.append(AudioSample.domain == domain)
 
-        # Always fetch total first
-        total_stmt = select(AudioSample.id).where(and_(*filters))
-        total_result = await session.execute(total_stmt)
-        total = len(total_result.scalars().all())
+        print(f"\n\n\nThe filter paramaters are {language}, {limit}, {pct}, {category}, {gender}, {age_group}, {education}, {split}, {domain}")
+        
+        try:
+            if gender:
+                filters.append(AudioSample.gender == gender)
+            if category:
+                filters.append(AudioSample.category == category)
+            if age_group:
+                filters.append(AudioSample.age_group == age_group)
+            if education:
+                filters.append(AudioSample.edu_level == education)
+            if domain:
+                filters.append(AudioSample.domain == domain)
+            if split:
+                filters.append(AudioSample.split == split)
+
+            # Always fetch total first
+            total_stmt = select(AudioSample.id).where(and_(*filters))
+            total_result = await session.execute(total_stmt)
+            total = len(total_result.scalars().all())
+        except Exception as e:
+            raise HTTPException(500, f"Failed to count samples: {e}")   
 
         if total == 0:
             raise HTTPException(
@@ -170,6 +187,68 @@ class DownloadService:
 
     
 
+    async def filter_core_stream(
+        self,
+        session: AsyncSession,
+        language: str,
+        pct: Optional[float] = None,
+        category: str | None = None,
+        gender: str | None = None,
+        age_group: str | None = None,
+        education: str | None = None,
+        split: str | None = None,
+        domain: str | None = None,
+    ) -> Tuple[AsyncScalarResult[AudioSample], int]:
+        """
+        Returns a memory-efficient async stream of AudioSample records and the total count.
+        """
+        print(f"This is all the filter parameters {language}, {pct}, {category}, {gender}, {age_group}, {education}, {split}, {domain}")
+        filters = [AudioSample.language == language]
+        if gender:
+            filters.append(AudioSample.gender == gender)
+        if category:
+            filters.append(AudioSample.category == category)
+        if age_group:
+            filters.append(AudioSample.age_group == age_group)
+        if education:
+            filters.append(AudioSample.edu_level == education)
+        if domain:
+            filters.append(AudioSample.domain == domain)
+        if split:
+            filters.append(AudioSample.split == split)
+
+        # Efficiently count the total matching rows without loading them
+        count_query = select(func.count(AudioSample.id)).where(and_(*filters))
+        total_available_result = await session.execute(count_query)
+        total_available = total_available_result.scalar_one()
+
+        if total_available == 0:
+            raise ValueError("No audio samples found for the selected criteria.")
+
+        # Determine how many records to fetch
+        if pct is not None:
+            if not (0 < pct <= 100):
+                raise ValueError("Percentage must be between 0 and 100")
+            num_to_fetch = math.ceil((pct / 100) * total_available)
+        else:
+            # Default to all if no percentage is given
+            num_to_fetch = total_available
+
+        # Build the main query that will be streamed
+        query = (
+            select(AudioSample)
+            .where(and_(*filters))
+            .order_by(AudioSample.id) # Consistent ordering is good practice
+            .limit(num_to_fetch)
+        )
+
+        # Use session.stream_scalars to get an async iterator. This is the key change.
+        result_stream = await session.stream_scalars(query)
+        
+        return result_stream, num_to_fetch
+
+
+
     async def estimate_zip_size_only(
         self,
         session: AsyncSession,
@@ -179,207 +258,40 @@ class DownloadService:
         gender: GenderEnum | None = None,
         age_group: str | None = None,
         education: str | None = None,
+        split: str | None = None,
         domain: str | None = None,
-
     ) -> dict:
-
-        samples,  total = await self.filter_core(
-            session=session, 
+        """
+        Estimate total dataset ZIP size using durations instead of actual file sizes.
+        """
+        # Reuse your filter logic
+        samples, total = await self.filter_core(
+            session=session,
             language=language,
             category=category,
             gender=gender,
+            split=split,
             age_group=age_group,
             education=education,
             domain=domain,
             pct=pct
         )
 
-        print("the samples are ", samples)
+        total_duration = sum(float(s.duration) for s in samples if s.duration)
 
-        try:
-            total_size = await estimate_total_size([s.storage_link for s in samples])
-        except Exception as e:
-            raise HTTPException(500, f"Failed to estimate size: {e}")
+        # Compute total size in bytes based on PCM WAV assumption
+        bytes_per_sample = AUDIO_BIT_DEPTH / 8
+        total_bytes = total_duration * AUDIO_SAMPLE_RATE * bytes_per_sample * AUDIO_CHANNELS
+
+        # Apply compression ratio
+        estimated_zip_bytes = total_bytes * COMPRESSION_RATIO
+
         return {
-            "estimated_size_bytes": total_size,
-            "estimated_size_mb": round(total_size / (1024**2), 2),
-            "sample_count": len(samples)
+            "estimated_size_bytes": int(estimated_zip_bytes),
+            "estimated_size_mb": round(estimated_zip_bytes / (1024 ** 2), 2),
+            "sample_count": len(samples),
+            "total_duration_seconds": round(total_duration, 2)
         }
-
-
-    async def download_zip_with_metadata(
-        self, 
-        language: str, 
-        pct: int | float, 
-
-        session: AsyncSession, 
-        background_tasks: BackgroundTasks, 
-        current_user: TokenUser,
-
-        category: str = None,
-        gender: GenderEnum | None = None,
-        age_group: str | None = None,
-        education: str | None = None,
-        domain: str | None = None,
-
-        as_excel: bool = True
-    ):
-
-        samples, _ = await self.filter_core(
-            session=session, 
-            language=language,
-            category=category,
-            gender=gender,
-            age_group=age_group,
-            education=education,
-            domain=domain,
-            pct=pct
-        )
-
-        if samples:
-            print("the samples are ", samples[0])
-
-        if not samples:
-            raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
-        background_tasks.add_task(
-            session.add,
-            DownloadLog(
-                user_id=current_user.id,
-                dataset_id=samples[0].dataset_id,
-                percentage=pct,
-            ),
-        )
-        await session.commit() 
-
-        # Stream ZIP
-        try:
-            # zip_stream, zip_filename = await stream_zip_with_metadata_links(
-            #         samples, self.s3_bucket_name, as_excel=as_excel, language=language, pct=pct, category=category
-            #     )
-             zip_path, zip_name = await prepare_zip_file(samples, language=language, pct=pct, as_excel=as_excel)
-        except Exception as e:
-            raise HTTPException(500, f"Failed to generate ZIP: {e}")
-
-        # return StreamingResponse(
-        #     zip_stream,
-        #     media_type="application/zip",
-        #     headers={
-        #         "Content-Disposition": f"attachment; filename={zip_filename}"
-        #     }
-        # )
-        return FileResponse(
-            zip_path,
-            media_type="application/zip",
-            filename=zip_name
-        )
-
-
-
-
-    # async def download_zip_with_metadata_s3(
-    #     self,
-    #     language: str, 
-    #     pct: int | float, 
-
-    #     session: AsyncSession, 
-    #     background_tasks: BackgroundTasks, 
-    #     current_user: TokenUser,
-
-    #     category: str = None,
-    #     gender: GenderEnum | None = None,
-    #     age_group: str | None = None,
-    #     education: str | None = None,
-    #     domain: str | None = None,
-
-    #     as_excel: bool = True,
-    # ):
-
-    #     samples, total = await self.filter_core(
-    #         session=session, 
-    #         language=language,
-    #         category=category,
-    #         gender=gender,
-    #         age_group=age_group,
-    #         education=education,
-    #         domain=domain,
-    #         pct=pct
-    #     )
-
-    #     if samples:
-    #         print("the total number of samples is ", total)
-    #         print("the samples are ", samples[0])
-
-    #     if not samples:
-    #         raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
-    #     background_tasks.add_task(
-    #         session.add,
-    #         DownloadLog(
-    #             user_id=current_user.id,
-    #             dataset_id=samples[0].dataset_id,
-    #             percentage=pct,
-    #         ),
-    #     )
-    #     await session.commit() 
-
-    #     if not samples:
-    #         raise HTTPException(404, "No audio samples found.")
-
-    #     today = datetime.datetime.now().strftime("%Y-%m-%d")
-    #     zip_folder = f"{language}_{pct}pct_{today}"
-    #     zip_name = f"{zip_folder}_dataset.zip"
-    #     object_key = f"exports/{zip_name}"
-
-    #     # Stream directly into memory buffer
-    #     buffer = io.BytesIO()
-
-    #     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as z:
-    #         async with aiohttp.ClientSession() as session:
-    #             for s in samples:
-    #                 if not getattr(s, "storage_link", None):
-    #                     continue
-
-    #                 audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
-    #                 print(f"Downloading {audio_filename}")
-
-    #                 try:
-    #                     async with session.get(s.storage_link) as resp:
-    #                         if resp.status == 200:
-    #                             audio_bytes = await resp.read()
-    #                             z.writestr(audio_filename, audio_bytes)
-    #                             print(f"The request is {resp}")
-    #                             print(f"The storage link is {s.storage_link}")
-    #                             print(f"✅ Added {audio_filename}")
-    #                         else:
-    #                             print(f"The storage link is {s.storage_link}")
-    #                             print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
-    #                 except Exception as e:
-    #                     print(f"❌ Error fetching {s.sentence_id}: {e}")
-
-    #         # Add metadata
-    #         metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
-    #         metadata_buf.seek(0)
-    #         z.writestr(f"{zip_folder}/{metadata_filename}", metadata_buf.read())
-
-    #         # Add README
-    #         last_id = samples[-1].sentence_id if samples else None
-    #         readme_text = generate_readme(language, pct, as_excel, len(samples), last_id)
-    #         z.writestr(f"{zip_folder}/README.txt", readme_text)
-
-    #     # Upload to S3 (buffer → S3 directly)
-    #     buffer.seek(0)
-    #     self.s3.upload_fileobj(buffer, self.bucket, object_key)
-
-    #     # Generate pre-signed URL
-    #     signed_url = self.s3.generate_presigned_url(
-    #         "get_object",
-    #         Params={"Bucket": self.bucket, "Key": object_key},
-    #         ExpiresIn=3600,  # 1 hour
-    #     )
-
-    #     print(f"✅ Uploaded to s3://{self.bucket}/{object_key}")
-    #     print(f"🔗 Signed URL: {signed_url}")
-    #     return {"download_url": signed_url}
-
 
 
 
@@ -392,6 +304,7 @@ class DownloadService:
         current_user: TokenUser,
         category: str = None,
         gender: GenderEnum | None = None,
+        split: str | None = None,
         age_group: str | None = None,
         education: str | None = None,
         domain: str | None = None,
@@ -405,6 +318,7 @@ class DownloadService:
             gender=gender,
             age_group=age_group,
             education=education,
+            split=split,
             domain=domain,
             pct=pct
         )
@@ -424,128 +338,31 @@ class DownloadService:
         )
         await session.commit()
 
-        # 3. Prepare ZIP stream
-        today = datetime.datetime.now().strftime("%Y-%m-%d")
-        zip_folder = f"{language}_{pct}pct_{today}"
-        zip_name = f"{zip_folder}_dataset.zip"
-        object_key = f"exports/{zip_name}"
-
-        zs = zipstream.ZipFile(mode='w', compression=zipstream.ZIP_DEFLATED)
-
-        async with aiohttp.ClientSession() as http_session:
-            for s in samples:
-                if not getattr(s, "storage_link", None):
-                    continue
-
-                audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
-
-                # Convert async audio generator to bytes
-                audio_bytes = b""
-                try:
-                    async with http_session.get(s.storage_link) as resp:
-                        if resp.status == 200:
-                            while True:
-                                chunk = await resp.content.read(1024 * 1024)
-                                if not chunk:
-                                    break
-                                audio_bytes += chunk
-                                print(f"✅ Added {audio_filename}")
-                        else:
-                            print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
-                            continue
-                except Exception as e:
-                    print(f"❌ Error fetching {s.sentence_id}: {e}")
-                    continue
-
-                zs.write_iter(audio_filename, iter([audio_bytes]))
-
-        # Add metadata
-        metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
-        metadata_buf.seek(0)
-        zs.write_iter(f"{zip_folder}/{metadata_filename}", iter([metadata_buf.read()]))
-
-        # Add README
-        last_id = samples[-1].sentence_id if samples else None
-        readme_text = generate_readme(language, pct, as_excel, len(samples), last_id)
-        zs.write_iter(f"{zip_folder}/README.txt", iter([readme_text.encode()]))
-
-        # 4. Write ZIP to temporary file and upload
-        session_aioboto = aioboto3.Session()
-        try:
-            with tempfile.NamedTemporaryFile() as tmp:
-                for chunk in zs:
-                    tmp.write(chunk)
-                tmp.seek(0)
-
-                async with session_aioboto.client(
-                    "s3",
-                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name=settings.AWS_REGION,
-                    endpoint_url=settings.AWS_ENDPOINT_URL
-                ) as s3_client:
-                    await s3_client.upload_fileobj(
-                        Fileobj=tmp,
-                        Bucket=self.s3_bucket_name,
-                        Key=object_key
-                    )
-
-                    # Generate presigned URL
-                    signed_url = await s3_client.generate_presigned_url(
-                        ClientMethod="get_object",
-                        Params={"Bucket": self.s3_bucket_name, "Key": object_key},
-                        ExpiresIn=3600
-                    )
-                    print(f"✅ Uploaded to s3://{self.s3_bucket_name}/{object_key}")
-        except Exception as e:
-            raise HTTPException(500, f"Failed to upload to S3: {e}")
-
-        return {"download_url": signed_url}
-
-
-
-
-
-
-    async def start_zip_job(
-        self,
-        session: AsyncSession,
-        language: str,
-        pct: int | float,
-        current_user: TokenUser,
-        category: str | None = Category.read,
-        gender: GenderEnum | None = None,
-        age_group: str | None = None,
-        education: str | None = None,
-        domain: str | None = None,
-        as_excel: bool = True,
-    ):
-        request_id = str(uuid.uuid4())
-
-        # Log request in DB
-        download_log = DownloadLog(
-            id=request_id,
-            user_id=current_user.id,
-            dataset_id=None,
-            percentage=pct,
-            status="processing"
-        )
-        session.add(download_log)
-        await session.commit()
-
-        # Enqueue async job
-        create_dataset_zip_gcp(
-            request_id, language, pct, category, gender, age_group, education, domain, as_excel
+        return await stream_zip_to_s3(
+            language=language,
+            samples=samples,
+            as_excel=as_excel
         )
 
-        return {"request_id": request_id}
 
 
-    async def get_zip_status(self, session: AsyncSession, request_id: str):
-        result = await session.get(DownloadLog, request_id)
-        if not result:
-            raise HTTPException(404, "No such request")
-        return {
-            "status": result.status,
-            "download_url": result.download_url if result.status == "ready" else None,
-        }
+
+# # Stream ZIP
+        # try:
+        #     zip_stream, zip_filename = await stream_zip_to_s3(
+        #             samples, self.s3_bucket_name, 
+        #             as_excel=as_excel, 
+        #             language=language, 
+        #             pct=pct, 
+        #             category=category
+        #         )
+        # except Exception as e:
+        #     raise HTTPException(500, f"Failed to generate ZIP: {e}")
+
+        # return StreamingResponse(
+        #     zip_stream,
+        #     media_type="application/zip",
+        #     headers={
+        #         "Content-Disposition": f"attachment; filename={zip_filename}"
+        #     }
+        # )

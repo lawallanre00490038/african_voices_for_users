@@ -1,28 +1,21 @@
 from src.db.models import AudioSample
 import  io
 import pandas as pd
-from sqlalchemy import func
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
-from typing import Optional
+from typing import Optional, List
 import datetime
 import requests
-import requests
-from io import BytesIO
-from math import floor
 import aiohttp
-import asyncio, os
-from enum import Enum
-import botocore.exceptions
+import asyncio, os, aioboto3
 from fastapi import HTTPException
 from src.db.models import AudioSample, Category
 from src.download.s3_config import  SUPPORTED_LANGUAGES
-from src.download.s3_config import s3
+from src.download.s3_config import s3_aws
 from src.download.s3_config import generate_obs_signed_url, map_sentence_id_to_transcript_obs
 from sqlmodel import select, and_
 from src.config import settings
+import zipstream
 
-
+s3 = s3_aws
 
 # ================================================================================
 semaphore = asyncio.Semaphore(5)
@@ -58,94 +51,6 @@ async def fetch_all(samples):
         print(f"Downloading {len(samples)} samples")
         return await asyncio.gather(*tasks)
 
-# =========================================================================
-
-
-# async def fetch_subset(
-#     session: AsyncSession, 
-#     language: str, 
-#     pct: int | float,
-
-#     category: str | None = Category.read_with_spontaneous,
-#     gender: str | None = None,
-#     age_group: str | None = None,
-#     education: str | None = None,
-#     domain: str | None = None,
-        
-#     ):
-#     # Count total number of samples
-#     if language not in SUPPORTED_LANGUAGES:
-#             raise HTTPException(400, f"Unsupported language: {language}. Only 'Naija', Yoruba', 'Igbo', and 'Hausa' are supported")
-
-#     filters = [AudioSample.language == language]
-
-#     if gender:
-#         filters.append(AudioSample.gender == gender)
-#     if category:
-#         filters.append(AudioSample.category == category)
-#     if age_group:
-#         filters.append(AudioSample.age_group == age_group)
-#     if education:
-#         filters.append(AudioSample.edu_level == education)
-#     if domain:
-#         filters.append(AudioSample.domain == domain)
-
-#     total_stmt = select(func.count()).select_from(AudioSample).where(and_(*filters))
-#     total_result = await session.execute(total_stmt)
-#     total = total_result.scalar_one()
-
-#     print(f"Total samples for {language}: {total}")
-
-#     if total == 0:
-#         return []
-
-#     count = max(1, int(floor(total * pct / 100)))
-
-#     stmt = (
-#         select(AudioSample)
-#         .where(and_(*filters))
-#         .order_by(AudioSample.id)
-#         .limit(count)
-#     )
-#     result = await session.execute(stmt)
-#     response = result.scalars().all()
-
-#     if not response:
-#         raise HTTPException(404, "No audio samples found. There might not be enough data for the selected filters")
-    
-#     urls = [
-#         {
-#             "id": str(s.id),
-#             "annotator_id": s.annotator_id,
-#             "sentence_id": s.sentence_id,
-#             "sentence": s.sentence,
-#             "storage_link": s.storage_link,
-#             "gender": s.gender,
-#             "audio_url_obs": generate_obs_signed_url(
-#                 language=s.language.lower(),
-#                 category=s.category,
-#                 filename=f"{s.sentence_id}.wav",
-#                 storage_link=s.storage_link,
-#             ),
-#             "transcript_url_obs": map_sentence_id_to_transcript_obs(s.sentence_id, s.language, s.category, s.sentence),
-#             "age_group": s.age_group,
-#             "edu_level": s.edu_level,
-#             "durations": s.durations,
-#             "language": s.language,
-#             "edu_level": s.edu_level,
-#             "snr": s.snr,
-#             "domain": s.domain,
-#             "category": s.category,
-
-#         }
-        
-#         for s in response
-#     ]
-#     print(response)
-#     return urls
-
-
-
 
 async def fetch_size(session, url):
     try:
@@ -162,23 +67,21 @@ async def estimate_total_size(urls):
         return sum(sizes)
 
 
-
-def generate_metadata_buffer(samples, as_excel=True):
+def generate_metadata_buffer(samples: List[AudioSample], as_excel=True):
     """Create metadata buffer in either Excel or CSV."""
     df = pd.DataFrame([{
-        "speaker_id": s.annotator_id,
+        "speaker_id": s.speaker_id,
         "transcript_id": s.sentence_id,
         "transcript": s.sentence or "",
         "audio_path": f"audio/{s.sentence_id}.wav",
         "gender": s.gender,
         "age_group": s.age_group,
         "edu_level": s.edu_level,
-        "durations": s.durations,
+        "durations": s.duration,
         "language": s.language,
         "edu_level": s.edu_level,
         "snr": s.snr,
         "domain": s.domain,
-        # "category": s.category,
     } for idx, s in enumerate(samples)])
 
     buf = io.BytesIO()
@@ -227,37 +130,6 @@ def generate_readme(language: str, pct: int, as_excel: bool, num_samples: int, s
 
 
 
-async def stream_zip_with_metadata_links(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
-    import zipstream
-    import datetime
-
-    today = datetime.datetime.now().strftime("%Y-%m-%d")
-    zip_folder = f"{language}_{pct}pct_{today}"
-    zip_name = f"{zip_folder}_dataset.zip"
-
-    audio_contents = await fetch_all(samples)
-    valid_results = [(sid, data) for sid, data in audio_contents if data is not None]
-    print(f"✅ Fetched {len(valid_results)} / {len(samples)}")
-
-    valid_ids = {sid for sid, _ in valid_results}
-    filtered_samples = [s for s in samples if s.sentence_id in valid_ids]
-
-    z = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
-    
-    sentence_id_new = None
-    for sentence_id, audio_data in valid_results:
-        z.write_iter(f"{zip_folder}/audio/{sentence_id}.wav", [audio_data])
-        sentence_id_new=sentence_id
-
-    metadata_buf, metadata_filename = generate_metadata_buffer(filtered_samples, as_excel=as_excel)
-    metadata_buf.seek(0)
-    z.write_iter(f"{zip_folder}/{metadata_filename}", metadata_buf)
-
-    readme_text = generate_readme(language, pct, as_excel, len(filtered_samples), sentence_id_new)
-    z.write_iter(f"{zip_folder}/README.txt", io.BytesIO(readme_text.encode("utf-8")))
-
-    return z, zip_name
-
 
 
 async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language='hausa', pct=10, category: Optional[str] = "read"):
@@ -278,9 +150,9 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
         print("the language is: ", language, "\n\n")
         print("the category is: ", category, "\n\n")
 
-        category = s.category or "read_with_spontaneous"
 
         key = f"{language.lower()}/{category.lower()}/{s.sentence_id}.wav"
+
         print(f"\nDownloading {audio_filename}", "\n", key)
         s3_stream = s3.get_object(Bucket=settings.OBS_BUCKET_NAME, Key=key)['Body']
         print(f"\nDownloading {audio_filename}", "\n", s3_stream)
@@ -301,58 +173,140 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
 
 
 
+CHUNK_SIZE = 5 * 1024 * 1024  # 5MB (min size for S3 multipart parts)
 
-import aiohttp
-import tempfile
-import datetime
-import io
-import zipfile
 
-async def prepare_zip_file(samples, language="hausa", pct=10, as_excel=True):
+
+
+
+async def stream_zip_to_s3(language: str, samples, as_excel: bool = True):
     today = datetime.datetime.now().strftime("%Y-%m-%d")
-    zip_folder = f"{language}_{pct}pct_{today}"
+    zip_folder = f"{language}_{today}"
     zip_name = f"{zip_folder}_dataset.zip"
+    object_key = f"exports/{zip_name}"
 
-    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
-    tmp.close()
+    zs = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
 
-    with zipfile.ZipFile(tmp.name, "w", zipfile.ZIP_DEFLATED) as z:
-        async with aiohttp.ClientSession() as session:
-            for s in samples:
-                if not getattr(s, "storage_link", None):
-                    continue
+    async with aiohttp.ClientSession() as http_session:
+        for s in samples:
+            try:
+                link = generate_obs_signed_url(
+                    language=s.language.lower(),
+                    category=s.category,
+                    filename=f"{s.sentence_id}.wav"
+                )
+                # async with http_session.get(link) as resp:
+                #     if resp.status != 200:
+                #         print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
+                #         continue
 
-                audio_filename = f"{zip_folder}/audio/{s.sentence_id}.wav"
-                print(f"Downloading {audio_filename}")
+                #     async def gen():
+                #         async for chunk in resp.content.iter_chunked(1024 * 1024):
+                #             yield chunk
 
-                try:
-                    async with session.get(s.storage_link) as resp:
-                        if resp.status == 200:
-                            # Stream to a temp file first (not memory)
-                            with tempfile.NamedTemporaryFile(delete=False) as tmp_audio:
-                                async for chunk in resp.content.iter_chunked(8192):
-                                    tmp_audio.write(chunk)
-                                tmp_audio_path = tmp_audio.name
+                #     zs.write_iter(
+                #         f"{zip_folder}/audio/{s.sentence_id}.wav", gen()
+                #     )
 
-                            # Now add to zip from file
-                            z.write(tmp_audio_path, audio_filename)
-                            print(f"✅ Added {audio_filename}")
+                async with http_session.get(link) as resp:
+                    if resp.status != 200:
+                        print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
+                        continue
 
-                            # ✅ Cleanup temp file immediately
-                            os.remove(tmp_audio_path)
-                        else:
-                            print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
-                except Exception as e:
-                    print(f"❌ Error fetching {s.sentence_id}: {e}")
+                    # read the audio file bytes asynchronously
+                    print(f"This is the download details: {s.sentence_id}, {s.sentence}")
+                    file_bytes = bytearray()
+                    async for chunk in resp.content.iter_chunked(1024 * 1024):
+                        file_bytes.extend(chunk)
 
-        # Add metadata
-        metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel=as_excel)
-        metadata_buf.seek(0)
-        z.writestr(f"{zip_folder}/{metadata_filename}", metadata_buf.read())
+                    # write the collected bytes as a single iterator for zipstream
+                    zs.write_iter(
+                        f"{zip_folder}/audio/{s.sentence_id}.wav",
+                        iter([bytes(file_bytes)])
+                    )
 
-        # Add README
-        last_id = samples[-1].sentence_id if samples else None
-        readme_text = generate_readme(language, pct, as_excel, len(samples), last_id)
-        z.writestr(f"{zip_folder}/README.txt", readme_text)
+                    
 
-    return tmp.name, zip_name
+
+            except Exception as e:
+                print(f"❌ Error fetching {s.sentence_id}: {e}")
+                continue
+
+    # Add metadata
+    metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel)
+    metadata_buf.seek(0)
+    zs.write_iter(f"{zip_folder}/{metadata_filename}", iter([metadata_buf.read()]))
+
+    # Add README
+    readme_text = generate_readme(language, 100, as_excel, len(samples), samples[-1].sentence_id)
+    zs.write_iter(f"{zip_folder}/README.txt", iter([readme_text.encode()]))
+
+    # --- STREAM UPLOAD TO S3 ---
+    session = aioboto3.Session()
+    async with session.client(
+        "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_REGION,
+        endpoint_url=settings.AWS_ENDPOINT_URL,
+    ) as s3_client:
+        # Start multipart upload
+        mpu = await s3_client.create_multipart_upload(
+            Bucket=settings.S3_BUCKET_NAME,
+            Key=object_key,
+        )
+
+        parts = []
+        part_number = 1
+        buffer = b""
+
+        try:
+            for chunk in zs:
+                buffer += chunk
+                if len(buffer) >= CHUNK_SIZE:
+                    part = await s3_client.upload_part(
+                        Bucket=settings.S3_BUCKET_NAME,
+                        Key=object_key,
+                        PartNumber=part_number,
+                        UploadId=mpu["UploadId"],
+                        Body=buffer,
+                    )
+                    parts.append({"ETag": part["ETag"], "PartNumber": part_number})
+                    part_number += 1
+                    buffer = b""
+
+            # Upload last remaining chunk
+            if buffer:
+                part = await s3_client.upload_part(
+                    Bucket=settings.S3_BUCKET_NAME,
+                    Key=object_key,
+                    PartNumber=part_number,
+                    UploadId=mpu["UploadId"],
+                    Body=buffer,
+                )
+                parts.append({"ETag": part["ETag"], "PartNumber": part_number})
+
+            # Complete multipart upload
+            await s3_client.complete_multipart_upload(
+                Bucket=settings.S3_BUCKET_NAME,
+                Key=object_key,
+                MultipartUpload={"Parts": parts},
+                UploadId=mpu["UploadId"],
+            )
+
+            signed_url = await s3_client.generate_presigned_url(
+                ClientMethod="get_object",
+                Params={"Bucket": settings.S3_BUCKET_NAME, "Key": object_key},
+                ExpiresIn=3600,
+            )
+
+            print(f"✅ Streamed directly to s3://{settings.S3_BUCKET_NAME}/{object_key}")
+            return {"download_url": signed_url}
+
+        except Exception as e:
+            await s3_client.abort_multipart_upload(
+                Bucket=settings.S3_BUCKET_NAME,
+                Key=object_key,
+                UploadId=mpu["UploadId"],
+            )
+            raise HTTPException(500, f"Streaming upload failed: {e}")

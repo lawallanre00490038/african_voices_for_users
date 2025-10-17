@@ -5,13 +5,13 @@ sqlalchemy
 sqlmodel
 alembic
 itsdangerous
+
 PyJWT
 
 passlib
 bcrypt==4.0.1
-python-multipart
-zipstream-new
 
+python-multipart
 psycopg2
 pandas
 
@@ -38,4 +38,14 @@ aiofiles
 aiohttp
 
 esdk-obs-python
-celery
+moto[s3]
+flower
+
+celery[redis]
+
+
+zipstream-ng
+zipstream-new
+
+openpyxl 
+xlrd
