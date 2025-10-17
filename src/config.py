@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
+from typing import Optional
 
 load_dotenv()
 
@@ -40,6 +41,10 @@ class Settings(BaseSettings):
     REDIS_PASSWORD: str
     REDIS_USERNAME: str
     SESSION_SECRET_KEY: str
+
+
+    CELERY_BROKER_URL: Optional[str] = None
+    CELERY_RESULT_BACKEND: Optional[str] = None
 
     model_config = SettingsConfigDict(
         env_file=".env", 

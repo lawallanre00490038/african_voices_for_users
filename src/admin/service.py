@@ -3,7 +3,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import List
 import uuid, io, pandas as pd
 from src.db.models import AudioSample, Feedback, DownloadLog
-from src.download.s3_config import s3, SUPPORTED_LANGUAGES
+from src.download.s3_config import  SUPPORTED_LANGUAGES, s3_aws
 from src.config import settings
 
 REQUIRED_COLUMNS = {
@@ -15,6 +15,8 @@ REQUIRED_COLUMNS = {
     "gender", 
     "duration"
 }
+
+s3 = s3_aws
 
 class AdminService:
 

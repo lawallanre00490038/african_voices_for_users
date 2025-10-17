@@ -19,13 +19,17 @@ s3_aws = boto3.client(
 )
 
 
-s3 = boto3.client(
+s3_obs = boto3.client(
     "s3",
     aws_access_key_id=settings.OBS_ACCESS_KEY_ID,
     aws_secret_access_key=settings.OBS_SECRET_ACCESS_KEY,
     endpoint_url="https://obsv3.cn-global-1.gbbcloud.com", 
     region_name="cn-global-1",
-    config=Config(s3={'addressing_style': 'path'})
+    config=Config(
+        s3={'addressing_style': 'path'},
+        signature_version='s3v4'
+    ),
+
 )
 
 BUCKET_OBS = settings.OBS_BUCKET_NAME
@@ -34,14 +38,11 @@ print(f"Using bucket: {BUCKET_OBS}")
 
 
 SUPPORTED_LANGUAGES = {"Naija", "Yoruba", "Hausa", "Igbo"}
-#  "yoruba", "hausa", "pidgin", "igbo"
-
 COLUMNS=[
     "transcript", "sample_rate", "snr",
     "transcript_id", "speaker_id", "category",
     "audio_path", "language", "gender", "duration", "age"
 ]
-
 VALID_PERCENTAGES = {5, 20, 40, 50, 60, 80, 100}
 VALID_CATEGORIES = {"read", "spontaneous", "read_with_spontaneous"}
 
@@ -49,7 +50,7 @@ VALID_CATEGORIES = {"read", "spontaneous", "read_with_spontaneous"}
 
 def create_presigned_url(audio_path: str, expiration: int = 3600, bucket: str = BUCKET_OBS) -> str:
     try:
-        response = s3.generate_presigned_url(
+        response = s3_obs.generate_presigned_url(
             "get_object",
             Params={"Bucket": bucket, "Key": audio_path},
             ExpiresIn=expiration
@@ -57,6 +58,7 @@ def create_presigned_url(audio_path: str, expiration: int = 3600, bucket: str = 
         return response
     except Exception as e:
         raise Exception(f"Failed to generate URL: {e}")
+
 
 
 def generate_obs_signed_url(language: str, category: str, filename: str, storage_link: Optional[str] = None, expiration: int = 3600) -> str:
@@ -76,11 +78,13 @@ def generate_obs_signed_url(language: str, category: str, filename: str, storage
     access_key = settings.OBS_ACCESS_KEY_ID
     secret_key = settings.OBS_SECRET_ACCESS_KEY
 
-    # if category.lower() != "spontaneous":
-    #     return storage_link
+    
+    from src.tasks.export_worker import map_category_to_folder
 
-    # Full object key in OBS
-    key = f"{language}/{category}/{filename}"
+    print(f"This is the category and the language from generate_obs_signed_url: {category}, {language}\n\n\n")
+
+    folder = map_category_to_folder(language, category)
+    key = f"{language}-test/{folder}/{filename}"
 
     # Expiry timestamp (Unix time)
     expires = int(time.time()) + expiration

@@ -15,10 +15,20 @@ class Optio(str, Enum):
     pending = "pending"
 
 
+class Split(str, Enum):
+    train = "train"
+    dev = "dev"
+    dev_test = "dev_test"
+
+
 class DownloadStatusEnum(str):
+    QUEUED = "queued"
     PROCESSING = "processing"
     READY = "ready"
     FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
 
 
 class RoleEnum(str, Enum):
@@ -72,15 +82,19 @@ class AudioSample(SQLModel, table=True):
     )
 
     dataset_id: Optional[str] = Field(foreign_key="dataset.id", nullable=True, default="naija")
-    annotator_id: str
-    sentence_id: str
-    sentence: str
-    storage_link: str
+
+    sentence_id: Optional[str] = Field(default=None)
+    sentence: Optional[str] = Field(default=None)
+    storage_link: Optional[str] = Field(default=None)
     gender: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None))
+
+    source: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None))
+    speaker_id: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None))
+    split: Optional[Split] =  Field(sa_column=Column(pg.VARCHAR, default=Split.train))
 
     age_group: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None, nullable=True))
     edu_level: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None, nullable=True))
-    durations: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None, nullable=True))
+    duration: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default=None, nullable=True))
 
     language: Optional[str] =  Field(sa_column=Column(pg.VARCHAR, default='naija'))
     snr:  Optional[int] = Field(sa_column=Column(pg.INTEGER, default=40))
@@ -165,11 +179,14 @@ class DownloadLog(SQLModel, table=True):
         sa_column=Column(String, index=True)
     )
 
+    language: Optional[str] = Field(default=None)
+
     # Presigned S3 download link (set when job is ready)
     download_url: Optional[str] = Field(default=None)
 
     # Optional error message if job fails
     error_message: Optional[str] = Field(default=None)
+    progress_pct: Optional[int] = Field(default=None)
 
     # Created and updated timestamps
     created_at: Optional[str] = Field(
