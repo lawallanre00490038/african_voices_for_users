@@ -19,9 +19,16 @@ SAMPLE_RATE = 48000
 CHANNELS = 1
 BYTES_PER_SAMPLE = 2
 
+import asyncio
+try:
+    import nest_asyncio
+    if not isinstance(asyncio.get_event_loop(), type(asyncio.new_event_loop())):
+        nest_asyncio.apply()
+except Exception as e:
+    print(f"⚠️ nest_asyncio skipped: {e}")
 
-import nest_asyncio
-nest_asyncio.apply()
+
+
 
 def s3_stream_bytes(s3_body, chunk_size=64 * 1024) -> Iterable[bytes]:
     """Generator to yield bytes from S3 StreamingBody."""

@@ -1,5 +1,6 @@
 # app/schemas/export.py
 
+from email import message
 from typing import Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
@@ -14,6 +15,7 @@ class ExportJobCreate(BaseModel):
 class ExportJobStatus(BaseModel):
     id: Optional[str] = None
     status: Optional[str] = None
+    message: Optional[str] = "Sit tight, we're zipping your files up"
     language: Optional[str] = None
     percentage: Optional[float] = None
     progress_pct: Optional[int] = None
