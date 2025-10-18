@@ -137,18 +137,26 @@ app.include_router(
 
 if __name__ == "__main__":
     import os
+    import platform
     import uvicorn
 
     ENV = os.getenv("ENV", "development")
     PORT = int(os.getenv("PORT", 8000))
     HOST = "localhost"
 
-    uvicorn.run(
-        "main:app",               # module:app
-        host=HOST,
-        port=PORT,
-        reload=True if ENV == "development" else False,
-        proxy_headers=True,
-        loop="uvloop",            
-        http="httptools"      
-    )
+    run_kwargs = {
+        "app": "main:app",
+        "host": HOST,
+        "port": PORT,
+        "reload": ENV == "development",
+        "proxy_headers": True,
+    }
+
+    # Only add uvloop/httptools on non-Windows systems
+    if platform.system() != "Windows":
+        run_kwargs.update({
+            "loop": "uvloop",
+            "http": "httptools"
+        })
+
+    uvicorn.run(**run_kwargs)
