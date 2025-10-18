@@ -12,14 +12,14 @@ class ExportJobCreate(BaseModel):
 
 # Schema for returning job status (formats outgoing data)
 class ExportJobStatus(BaseModel):
-    id: str
-    status: str
+    id: Optional[str] = None
+    status: Optional[str] = None
     language: Optional[str] = None
-    percentage: float
+    percentage: Optional[float] = None
     progress_pct: Optional[int] = None
     download_url: Optional[str] = None
     error_message: Optional[str] = None
-    created_at: datetime
+    created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
     class Config:

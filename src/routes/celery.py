@@ -1,9 +1,6 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
-
-
 from src.db.db import get_session
 from src.db.models import  GenderEnum, Category, DownloadStatusEnum
 from src.auth.utils import get_current_user
@@ -17,37 +14,6 @@ from src.schemas.export import ExportJobStatus
 # logger
 import logging
 logger = logging.getLogger(__name__)
-
-def map_all_to_none(value: Optional[str], language: Optional[str] = None) -> Optional[str]:
-    if not value:
-        return None
-    val = value.lower()
-    lang = language.lower()
-
-    if val == "all":
-        return None
-
-    # For value and language going into DB
-    if val == "read":
-        if lang in ["yoruba"]:
-            print(f"Mapping the category {val} to spontaneous")
-            return "spontaneous"
-    
-    print(f"This is the language coming from the backend")
-    return val
-
-
-
-def map_EV_to_EV(category: str | None, language: str | None = None) -> str | None:
-    if language.lower() in ["hausa"]:
-        if category is None:
-            return None
-        if category.lower() == "all":
-            return None
-        if category.lower() == "ec":
-            print("Mapping EC to EV for Hausa")
-            return "EV"
-    return category
 
 
 
@@ -73,16 +39,20 @@ async def enqueue_export_job(
     session: AsyncSession = Depends(get_session),
 ):
     """Enqueue export job and return job ID for tracking."""
+    from .routes import map_all_to_none, map_EV_to_EV
+    # Enqueue task with job ID
+    from src.tasks.export_worker import create_dataset_zip_s3_task_new
     
     # Sanitize inputs
-    gender = map_all_to_none(gender)
-    age = map_all_to_none(age)
-    education = map_all_to_none(education)
+    gender = map_all_to_none(value=gender)
+    age = map_all_to_none(value=age)
+    education = map_all_to_none(value=education)
     domain = map_EV_to_EV(domain, language)
     category = map_all_to_none(category, language)
 
     gender = GenderEnum(gender) if gender else None
     category = Category(category) if category else None
+    language = language.lower()
 
     # Create job record
     user_id = current_user.id
@@ -93,20 +63,18 @@ async def enqueue_export_job(
     )
     job = await create_export_job(session=session, job_create=job_create)
 
-    # Enqueue task with job ID
-    from src.tasks.export_worker import create_dataset_zip_s3_task_new
+    
     task = create_dataset_zip_s3_task_new.delay(
         job_id=str(job.id), 
         language=language, 
         pct=pct,
-        gender=str(gender),
+        gender=gender,
         age_group=age,
         education=education,
         domain=domain,
-        category=str(category),
+        category=category,
         split=split,
     )
-
     logger.info(f"Enqueued job {job.id} with task_id {task.id}")
     
     return ExportJobStatus.model_validate(job, from_attributes=True)
@@ -125,7 +93,7 @@ async def get_export_status(
     """
     Poll this endpoint to get the status and download URL of an export job.
     """
-    job = await get_export_job(session, str(request_id))
+    job = await get_export_job(session, request_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
@@ -154,6 +122,13 @@ async def export_status_ws(websocket: WebSocket, job_id: str):
                     await websocket.send_json({
                         "status": "NOT_FOUND",
                         "error": "Job not found"
+                    })
+                    break
+
+                if job.error_message is not None:
+                    await websocket.send_json({
+                        "status": "FAILED",
+                        "error": job.error_message
                     })
                     break
 

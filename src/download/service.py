@@ -133,8 +133,6 @@ class DownloadService:
         domain: str | None = None,
     ):
         filters = [AudioSample.language == language]
-
-        print(f"\n\n\nThe filter paramaters are {language}, {limit}, {pct}, {category}, {gender}, {age_group}, {education}, {split}, {domain}")
         
         try:
             if gender:
