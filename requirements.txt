@@ -39,7 +39,7 @@ aiofiles
 aiohttp
 
 esdk-obs-python
-moto[s3]
+moto
 flower
 
 # celery[redis]
