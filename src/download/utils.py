@@ -13,7 +13,7 @@ from src.download.s3_config import s3_aws
 from src.download.s3_config import generate_obs_signed_url, map_sentence_id_to_transcript_obs
 from sqlmodel import select, and_
 from src.config import settings
-import zipstream
+from zipstream import ZipStream, ZIP_DEFLATED
 
 s3 = s3_aws
 
@@ -176,16 +176,14 @@ async def stream_zip_with_metadata(samples, bucket: str, as_excel=True, language
 CHUNK_SIZE = 5 * 1024 * 1024  # 5MB (min size for S3 multipart parts)
 
 
-
-
-
 async def stream_zip_to_s3(language: str, samples, as_excel: bool = True):
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     zip_folder = f"{language}_{today}"
     zip_name = f"{zip_folder}_dataset.zip"
     object_key = f"exports/{zip_name}"
 
-    zs = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
+    # zs = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED)
+    zs = ZipStream(compress_type=ZIP_DEFLATED, compress_level=9)
 
     async with aiohttp.ClientSession() as http_session:
         for s in samples:
@@ -195,19 +193,6 @@ async def stream_zip_to_s3(language: str, samples, as_excel: bool = True):
                     category=s.category,
                     filename=f"{s.sentence_id}.wav"
                 )
-                # async with http_session.get(link) as resp:
-                #     if resp.status != 200:
-                #         print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
-                #         continue
-
-                #     async def gen():
-                #         async for chunk in resp.content.iter_chunked(1024 * 1024):
-                #             yield chunk
-
-                #     zs.write_iter(
-                #         f"{zip_folder}/audio/{s.sentence_id}.wav", gen()
-                #     )
-
                 async with http_session.get(link) as resp:
                     if resp.status != 200:
                         print(f"⚠️ Skipping {s.sentence_id}, HTTP {resp.status}")
@@ -220,10 +205,7 @@ async def stream_zip_to_s3(language: str, samples, as_excel: bool = True):
                         file_bytes.extend(chunk)
 
                     # write the collected bytes as a single iterator for zipstream
-                    zs.write_iter(
-                        f"{zip_folder}/audio/{s.sentence_id}.wav",
-                        iter([bytes(file_bytes)])
-                    )
+                    zs.add(iter([bytes(file_bytes)]), arcname=f"{zip_folder}/audio/{s.sentence_id}.wav")
 
                     
 
@@ -235,11 +217,12 @@ async def stream_zip_to_s3(language: str, samples, as_excel: bool = True):
     # Add metadata
     metadata_buf, metadata_filename = generate_metadata_buffer(samples, as_excel)
     metadata_buf.seek(0)
-    zs.write_iter(f"{zip_folder}/{metadata_filename}", iter([metadata_buf.read()]))
+    zs.add(iter([metadata_buf.read()]), arcname=f"{zip_folder}/{metadata_filename}")
+    
 
     # Add README
     readme_text = generate_readme(language, 100, as_excel, len(samples), samples[-1].sentence_id)
-    zs.write_iter(f"{zip_folder}/README.txt", iter([readme_text.encode()]))
+    zs.add(iter([readme_text.encode()]), arcname=f"{zip_folder}/README.txt")
 
     # --- STREAM UPLOAD TO S3 ---
     session = aioboto3.Session()
