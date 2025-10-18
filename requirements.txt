@@ -49,3 +49,4 @@ zipstream-new
 
 openpyxl 
 xlrd
+nest-asyncio
