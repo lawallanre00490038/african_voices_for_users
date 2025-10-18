@@ -141,7 +141,7 @@ if __name__ == "__main__":
 
     ENV = os.getenv("ENV", "development")
     PORT = int(os.getenv("PORT", 8000))
-    HOST = "0.0.0.0"  # bind to all interfaces for Docker
+    HOST = "localhost"
 
     uvicorn.run(
         "main:app",               # module:app
@@ -149,6 +149,6 @@ if __name__ == "__main__":
         port=PORT,
         reload=True if ENV == "development" else False,
         proxy_headers=True,
-        loop="uvloop",             # use uvloop explicitly
-        http="httptools"           # fast HTTP parsing
+        loop="uvloop",            
+        http="httptools"      
     )
