@@ -50,3 +50,5 @@ zipstream-new
 openpyxl 
 xlrd
 nest-asyncio
+uvloop==0.4.12
+aioboto3
