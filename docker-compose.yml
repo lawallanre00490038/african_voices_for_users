@@ -7,7 +7,8 @@ services:
       - ./local_db:/app/local_db
       - .:/app
     env_file: .env
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload --loop uvloop --http httptools
     restart: on-failure
     depends_on:
       - redis

@@ -121,15 +121,34 @@ app.include_router(
 
 
 
+# if __name__ == "__main__":
+#     ENV = os.getenv("ENV", "development")
+#     PORT = int(os.getenv("PORT", 8000))
+#     HOST = "localhost" if ENV == "production" else "localhost"
+
+#     uvicorn.run(
+#         app="main:app",
+#         host="localhost",
+#         port=PORT,
+#         reload=True if ENV == "development" else False,
+#         proxy_headers=True
+#     )
+
+
 if __name__ == "__main__":
+    import os
+    import uvicorn
+
     ENV = os.getenv("ENV", "development")
     PORT = int(os.getenv("PORT", 8000))
-    HOST = "localhost" if ENV == "production" else "localhost"
+    HOST = "0.0.0.0"  # bind to all interfaces for Docker
 
     uvicorn.run(
-        app="main:app",
-        host="localhost",
+        "main:app",               # module:app
+        host=HOST,
         port=PORT,
         reload=True if ENV == "development" else False,
-        proxy_headers=True
+        proxy_headers=True,
+        loop="uvloop",             # use uvloop explicitly
+        http="httptools"           # fast HTTP parsing
     )
