@@ -7,17 +7,16 @@ RUN apt-get update && \
     apt-get install -y gcc python3-dev libffi-dev libpq-dev make && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy only requirements.txt first to leverage Docker cache
+# Copy only requirements.txt first
 COPY requirements.txt .
 
-# Upgrade pip and install dependencies
-RUN pip install --upgrade pip==24.0.1
+# Upgrade pip to latest compatible version
+RUN pip install --upgrade "pip<24.1"
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Optional: install uvloop only in Linux container
-RUN pip install --no-cache-dir uvloop
-
-# Copy the rest of the application
+# Copy application
 COPY . .
 
 # Run the app
