@@ -41,7 +41,8 @@ esdk-obs-python
 moto[s3]
 flower
 
-celery[redis]
+# celery[redis]
+celery[redis]>=5.3.0,<6
 
 
 zipstream-ng
